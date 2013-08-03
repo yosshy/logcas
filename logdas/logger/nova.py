@@ -60,9 +60,7 @@ class FluentFormatter(object):
             message['message'] = record.msg % record.args
 
         if hasattr(record, 'extra'):
-            #message['extra'] = record.extra
-            for key in RELOCATED_INFO:
-                message[key] = message['extra'].get(key, '')
+            message['extra'] = record.extra
 
         if record.exc_info:
             message['traceback'] = self.formatException(record.exc_info)

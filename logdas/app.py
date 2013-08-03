@@ -26,10 +26,10 @@ DEFAULT_COLUMNS = {
     'hostname',
     'levelname',
     'binary',
-    'request_id',
-    'remote_address',
-    'tenant',
-    'user_name',
+    'extra.request_id',
+    'extra.remote_address',
+    'extra.tenant',
+    'extra.user_name',
 }
 
 LEVELMAP = {
@@ -72,14 +72,14 @@ def get_grouped_logs(page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
         abort(400)
     logs = mongo.db.logs.aggregate([
         {"$match": {
-            "request_id": {"$exists": 1},
+            "extra.request_id": {"$exists": 1},
             "levelno": {"$gt": 10}
         }},
         {"$group": {
-            "_id": "$request_id",
-            "project_name": {"$first": "$project_name"},
-            "user_name": {"$first": "$user_name"},
-            "remote_address": {"$first": "$remote_address"},
+            "_id": "$extra.request_id",
+            "project_name": {"$first": "$extra.project_name"},
+            "user_name": {"$first": "$extra.user_name"},
+            "remote_address": {"$first": "$extra.remote_address"},
             "maxlevelno": {"$max": "$levelno"},
             "starttime": {"$min": "$time"},
             "endtime": {"$max": "$time"},
@@ -98,7 +98,7 @@ def _index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     spec = {'levelno': {'$gte': DEFAULT_LEVELNO},
-            'request_id': {'$exists': 1}}
+            'extra.request_id': {'$exists': 1}}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('index.html', **locals())
@@ -133,7 +133,7 @@ def _requests_index():
 def _requests_show(request_id):
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec = {'request_id': request_id}
+    spec = {'extra.request_id': request_id}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())
