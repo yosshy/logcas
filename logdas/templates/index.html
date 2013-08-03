@@ -16,10 +16,8 @@
         <td>{{ log.time }}</td>
         <td>{{ log.hostname }}</td>
         <td>{{ log.binary }}</td>
-        <td>{%- if log.extra -%}
-            {%- if log.extra.request_id -%}
-            {{ j.render_requesturl(log.extra.request_id) }}
-            {%- endif -%}
+        <td>{%- if log.request_id -%}
+            {{ j.render_requesturl(log.request_id) }}
             {%- endif -%}</td>
         <td>{{ log.levelname }}</td>
         <td class="message">{{ log.message }}</td>
