@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% import "macro.html" as j with context %}
+
+{% block body %}
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Host</th>
+        <th>Binary</th>
+        <th>Request_id</th>
+        <th>Level</th>
+        <th>Message</th>
+    </tr>
+    {% for log in logs %}
+    <tr class="{{ log.levelname }}">
+        <td>{{ log.time }}</td>
+        <td>{{ log.hostname }}</td>
+        <td>{{ log.binary }}</td>
+        <td>{%- if log.extra -%}
+            {%- if log.extra.request_id -%}
+            {{ j.render_requesturl(log.extra.request_id) }}
+            {%- endif -%}
+            {%- endif -%}</td>
+        <td>{{ log.levelname }}</td>
+        <td class="message">{{ log.message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+{{ j.render_pagination(pages, page) }}
+{% endblock %}

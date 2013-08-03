@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% import "macro.html" as j with context %}
+
+{% block body %}
+<table>
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Elapsed</th>
+        <th>Max Level</th>
+        <th>Project</th>
+        <th>User</th>
+        <th>Remote Address</th>
+        <th>Request ID</th>
+    </tr>
+    {% for log in logs %}
+    <tr class="{{ log.levelname }}"">
+        <td>{{ log.starttime }}</td>
+        <td>{{ log.endtime }}</td>
+        <td>{{ log.endtime - log.starttime }}</td>
+        <td>{{ log.levelname }}</td>
+        <td>{{ log.project_name }}</td>
+        <td>{{ log.user_name }}</td>
+        <td>{{ log.remote_address }}</td>
+        <td class="message">{{ j.render_requesturl(log._id) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+{{ j.render_pagination(pages, page) }}
+{% endblock %}

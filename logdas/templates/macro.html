@@ -1,0 +1,25 @@
+{% macro render_requesturl(id) -%}
+<a href="{{url_for('_requests_show', request_id=id)}}">{{id}}</a>
+{%- endmacro %}
+
+{% macro render_current_pageurl(page, display) -%}
+<a href="{{request.environ.PATH_INFO}}?page={{page}}">{{display}}</a>
+{%- endmacro %}
+
+{% macro render_pagination(pages, page) -%}
+{%- if pages > 1 -%}
+{%- if page > 1 -%}
+{{ render_current_pageurl(page - 1, "prev") }}
+{%- endif -%}
+{%- for p in range(1, pages + 1) -%}
+{%- if p == page %}
+{{ p }}
+{%- else %}
+{{ render_current_pageurl(p, p) }}
+{%- endif -%}
+{%- endfor -%}
+{%- if page < pages %}
+{{ render_current_pageurl(page + 1, "next") }}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro %}

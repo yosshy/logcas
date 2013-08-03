@@ -1,0 +1,37 @@
+body {
+    background-color: #E0E0E0;
+}
+table {
+    background-color: #A0A0A0;
+    border-width: 2;
+    border-style: solid;
+    border-color: black;
+    width: 100%;
+}
+tr {
+    background-color: #CCCCCC;
+    text-align: center;
+}
+tr.DEBUG {
+    background-color: #808080;
+}
+tr.INFO {
+    background-color: #00FFFF;
+}
+tr.AUDIT {
+    background-color: #00FF00;
+}
+tr.WARN {
+    background-color: yellow;
+}
+tr.ERROR {
+    color: white;
+    background-color: red;
+}
+tr.CRITICAL {
+    color: white;
+    background-color: black;
+}
+td.message {
+    text-align: left;
+}
