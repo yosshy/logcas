@@ -12,13 +12,6 @@ from nova.openstack.common.gettextutils import _
 from nova.openstack.common import log
 
 
-RELOCATED_INFO = [
-    'project_name',
-    'user_name',
-    'remote_address',
-    'request_id',
-]
-
 try:
     import json
 except ImportError:
