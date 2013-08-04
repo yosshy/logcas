@@ -75,7 +75,7 @@ def get_grouped_logs(page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
     logs = mongo.db.logs.aggregate([
         {"$match": {
             "extra.request_id": {"$exists": 1},
-            "levelno": {"$gt": 10}
+            "extra.user_id": {"$ne": None},
         }},
         {"$group": {
             "_id": "$extra.request_id",
