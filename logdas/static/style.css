@@ -12,6 +12,12 @@ tr {
     background-color: #CCCCCC;
     text-align: center;
 }
+tr a:link {
+    color: black;
+}
+tr a:visited {
+    color: #202020;
+}
 tr.DEBUG {
     background-color: #808080;
 }
