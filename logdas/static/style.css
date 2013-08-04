@@ -28,9 +28,21 @@ tr.ERROR {
     color: white;
     background-color: red;
 }
+tr.ERROR a:link {
+    color: white;
+}
+tr.ERROR a:visited {
+    color: #D0D0D0;
+}
 tr.CRITICAL {
     color: white;
     background-color: black;
+}
+tr.CRITICAL a:link {
+    color: white;
+}
+tr.CRITICAL a:visited {
+    color: #D0D0D0;
 }
 td.message {
     text-align: left;
