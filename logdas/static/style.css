@@ -35,3 +35,14 @@ tr.CRITICAL {
 td.message {
     text-align: left;
 }
+div.dump {
+    background-color: #D0D0D0;
+    border-width: 2;
+    border-style: solid;
+    border-color: black;
+    width: 100%;
+}
+
+pre {
+    padding: 5pt;
+}

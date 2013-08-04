@@ -5,6 +5,7 @@ from flask import abort
 from flask import render_template
 from flask import request
 from flask.ext import pymongo
+import yaml
 
 
 ASC = pymongo.ASCENDING
@@ -19,6 +20,7 @@ app.config['MONGO_DBNAME'] = 'fluentd'
 #app.config['MONGO_PASSWORD'] = 'bar'
 
 mongo = pymongo.PyMongo(app)
+yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
 
 DEFAULT_COLUMNS = {
     'time',
@@ -137,6 +139,14 @@ def _requests_show(request_id):
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())
+
+@app.route('/logs/<ObjectId:log_id>')
+def _logs_show(log_id):
+    spec = {'_id': log_id}
+    log = mongo.db.logs.find_one_or_404(spec)
+    log.pop('_id')
+    log_yaml = yaml.dump(log, width=200, default_flow_style=False)
+    return render_template('log_show.html', **locals())
 
 if __name__ == '__main__':
         app.run(host='0.0.0.0', debug=True)

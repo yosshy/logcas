@@ -3,7 +3,9 @@
 
 {% block body %}
 <H2>Request ID: {{request_id}}</H2>
-
+<div class="pager">
+{{ j.render_pagination(pages, page) }}
+</div>
 <table>
     <tr>
         <th>Date/Time</th>
@@ -18,12 +20,11 @@
         <td>{{ log.hostname }}</td>
         <td>{{ log.binary }}</td>
         <td>{{ log.levelname }}</td>
-        <td class="message">{{ log.message }}</td>
+        <td class="message"><a href="{{ url_for('_logs_show', log_id=log._id) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>
-
-<br>
-
+<div class="pager">
 {{ j.render_pagination(pages, page) }}
+</div>
 {% endblock %}

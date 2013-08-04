@@ -22,7 +22,7 @@
             {%- endif -%}
             {%- endif -%}</td>
         <td>{{ log.levelname }}</td>
-        <td class="message">{{ log.message }}</td>
+        <td class="message"><a href="{{ url_for('_logs_show', log_id=log._id) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>

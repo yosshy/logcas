@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% import "macro.html" as j with context %}
+
+{% block body %}
+<H2>Log ID: {{log_id}}</H2>
+<div class="dump">
+<pre>
+{{log_yaml|e}}
+</pre>
+</div>
+{% endblock %}
