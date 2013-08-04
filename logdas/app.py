@@ -79,6 +79,7 @@ def get_grouped_logs(page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
         }},
         {"$group": {
             "_id": "$extra.request_id",
+            "count": {"$sum": 1},
             "project_name": {"$first": "$extra.project_name"},
             "user_name": {"$first": "$extra.user_name"},
             "remote_address": {"$first": "$extra.remote_address"},
@@ -149,4 +150,4 @@ def _logs_show(log_id):
     return render_template('log_show.html', **locals())
 
 if __name__ == '__main__':
-        app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True)
