@@ -7,16 +7,14 @@
 <body>
 <div class=page>
   <h1>LogDAS: Log Collecting and Analyzing System for OpenStack</h1>
-  <div class=metanav>
-      <a href="{{ url_for('_requests_index', levelno=10) }}">Request List</a>
-      <a href="{{ url_for('_index', levelno=20) }}">Log List</a>
-  </div>
-  <br>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
-  <form>
-      <input type="text" name="limit" value="{{ limit }}" /> entries per page
+  <div class=metanav>
+    <form>
+      <a href="{{ url_for('_requests_index', limit=limit, levelno=10) }}">Request List</a>
+      <a href="{{ url_for('_index', limit=limit, levelno=20) }}">Log List</a>
+      <input type="text" size="3" maxlength="3" name="limit" value="{{ limit }}" /> entries per page
       {% set levelmap = [(10, "Debug"), (20, "Info"), (21, "Audit"), (30, "Warning"), (40, "Error"), (50, "Critical")] %}
       {% for key, value in levelmap %}
       {% if levelno == key %}
@@ -26,7 +24,8 @@
       {% endif %}
       {% endfor %}
       <input type="submit" name="submit" />
-  </form>
+    </form>
+  </div>
   {% block body %}{% endblock %}
 </div>
 </body>
