@@ -1,13 +1,13 @@
 import itertools
-from fluent import sender
 import logging
-import msgpack
 import os
 import sys
 import socket
 import threading
 import traceback
 
+from fluent import sender
+import msgpack
 from nova.openstack.common.gettextutils import _
 from nova.openstack.common import log
 
