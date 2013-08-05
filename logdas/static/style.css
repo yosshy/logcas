@@ -30,6 +30,9 @@ tr.AUDIT {
 tr.WARN {
     background-color: yellow;
 }
+tr.WARNING {
+    background-color: yellow;
+}
 tr.ERROR {
     color: white;
     background-color: red;
