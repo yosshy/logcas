@@ -1,5 +1,6 @@
 {% macro render_requesturl(id) -%}
-<a href="{{url_for('_requests_show', request_id=id)}}">{{id}}</a>
+{%- set ln = request.args.get('levelno', 10) -%}
+<a href="{{url_for('_requests_show', request_id=id, levelno=ln)}}">{{id}}</a>
 {%- endmacro %}
 
 {% macro render_current_pageurl(page, display) -%}
