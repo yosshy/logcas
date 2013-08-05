@@ -3,7 +3,9 @@
 {%- endmacro %}
 
 {% macro render_current_pageurl(page, display) -%}
-<a href="{{request.environ.PATH_INFO}}?page={{page}}">{{display}}</a>
+{%- set newargs = request.args.copy().to_dict() -%}
+{%- set _dummy = newargs.update({'page': page}) -%}
+<a href="{{request.environ.PATH_INFO}}?{{newargs|urlencode}}">{{display}}</a>
 {%- endmacro %}
 
 {% macro render_pagination(pages, page) -%}
