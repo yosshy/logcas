@@ -2,6 +2,9 @@
 {% import "macro.html" as j with context %}
 
 {% block body %}
+<div class="pager">
+    {{ j.render_pagination(pages, page) }}
+</div>
 <table>
     <tr>
         <th>Date</th>
@@ -26,8 +29,7 @@
     </tr>
     {% endfor %}
 </table>
-
-<br>
-
-{{ j.render_pagination(pages, page) }}
+<div class="pager">
+    {{ j.render_pagination(pages, page) }}
+</div>
 {% endblock %}
