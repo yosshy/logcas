@@ -1,6 +1,9 @@
 body {
     background-color: #E0E0E0;
 }
+form input {
+    text-align: right;
+}
 table {
     background-color: #A0A0A0;
     border-width: 2;
