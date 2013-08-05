@@ -67,16 +67,13 @@ def get_logs(spec={}, columns=DEFAULT_COLUMNS,
                         skip=(page - 1) * limit)
     return logs.count(), logs
 
-def get_grouped_logs(page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
+def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
     if page < 1:
         abort(400)
     if order not in [ASC, DESC]:
         abort(400)
     logs = mongo.db.logs.aggregate([
-        {"$match": {
-            "extra.request_id": {"$exists": 1},
-            "extra.user_id": {"$ne": None},
-        }},
+        {"$match": spec},
         {"$group": {
             "_id": "$extra.request_id",
             "count": {"$sum": 1},
@@ -100,26 +97,9 @@ def get_grouped_logs(page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
 def _index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec = {'levelno': {'$gte': DEFAULT_LEVELNO},
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {'levelno': {'$gte': levelno},
             'extra.request_id': {'$exists': 1}}
-    counts, logs = get_logs(spec=spec, limit=limit, page=page)
-    pages = counts / limit + 1
-    return render_template('index.html', **locals())
-
-@app.route('/errors')
-def _errors():
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec={'levelno': {'$gte': logging.ERROR}}
-    counts, logs = get_logs(spec=spec, limit=limit, page=page)
-    pages = counts / limit + 1
-    return render_template('index.html', **locals())
-
-@app.route('/warnings')
-def _warnings():
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec={'levelno': {'$gte': logging.WARN}}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('index.html', **locals())
@@ -128,7 +108,11 @@ def _warnings():
 def _requests_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    counts, logs = get_grouped_logs(page=page, limit=limit)
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {"extra.request_id": {"$exists": 1},
+            "extra.user_id": {"$ne": None},
+            "levelno": {"$gte": levelno}}
+    counts, logs = get_grouped_logs(spec=spec, page=page, limit=limit)
     pages = counts / limit + 1
     return render_template('request_index.html', **locals())
 
@@ -136,7 +120,9 @@ def _requests_index():
 def _requests_show(request_id):
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec = {'extra.request_id': request_id}
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {'extra.request_id': request_id,
+            'levelno': {'$gte': levelno}}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())

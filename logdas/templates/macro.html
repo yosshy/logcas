@@ -5,6 +5,7 @@
 {% macro render_current_pageurl(page, display) -%}
 {%- set newargs = request.args.copy().to_dict() -%}
 {%- set _dummy = newargs.update({'page': page}) -%}
+{%- set _dummy = newargs.pop('submit', None) -%}
 <a href="{{request.environ.PATH_INFO}}?{{newargs|urlencode}}">{{display}}</a>
 {%- endmacro %}
 

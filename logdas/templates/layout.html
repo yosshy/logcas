@@ -9,13 +9,24 @@
   <h1>LogDAS: Log Collecting and Analyzing System for OpenStack</h1>
   <div class=metanav>
       <a href="{{ url_for('_requests_index') }}">Request List</a>
-      <a href="{{ url_for('_errors') }}">Error List</a>
-      <a href="{{ url_for('_warnings') }}">Warning List</a>
+      <a href="{{ url_for('_index') }}">Log List</a>
   </div>
   <br>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
+  <form>
+      <input type="text" name="limit" value="{{ limit }}" /> entries per page
+      {% set levelmap = [(10, "Debug"), (20, "Info"), (21, "Audit"), (30, "Warning"), (40, "Error"), (50, "Critical")] %}
+      {% for key, value in levelmap %}
+      {% if levelno == key %}
+      <input type="radio" name="levelno" value="{{key}}" checked="checked">{{value}}</input>
+      {% else %}
+      <input type="radio" name="levelno" value="{{key}}">{{value}}</input>
+      {% endif %}
+      {% endfor %}
+      <input type="submit" name="submit" />
+  </form>
   {% block body %}{% endblock %}
 </div>
 </body>
