@@ -8,8 +8,8 @@
 <div class=page>
   <h1>LogDAS: Log Collecting and Analyzing System for OpenStack</h1>
   <div class=metanav>
-      <a href="{{ url_for('_requests_index') }}">Request List</a>
-      <a href="{{ url_for('_index') }}">Log List</a>
+      <a href="{{ url_for('_requests_index', levelno=10) }}">Request List</a>
+      <a href="{{ url_for('_index', levelno=20) }}">Log List</a>
   </div>
   <br>
   {% for message in get_flashed_messages() %}
