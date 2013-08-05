@@ -54,7 +54,8 @@ class FluentFormatter(object):
                    #'thread_name': record.threadName,
                    #'process_name': record.processName,
                    #'process': record.process,
-                   'traceback': None}
+                   'traceback': None,
+                   'archived': False}
 
         if record.args:
             message['message'] = record.msg % record.args
