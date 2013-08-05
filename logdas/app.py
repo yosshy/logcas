@@ -119,7 +119,7 @@ def _errors():
 def _warnings():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    spec={'levelno': {'$gte': logging.ERROR}}
+    spec={'levelno': {'$gte': logging.WARN}}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('index.html', **locals())
