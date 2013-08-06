@@ -11,9 +11,9 @@ form input {
     text-align: right;
 }
 table {
-    background-color: LightSteelBlue;
+    background-color: Purple;
     border-width: 2;
-    border-style: solid;
+    /* border-style: solid; */
     border-color: black;
     width: 100%;
 }
