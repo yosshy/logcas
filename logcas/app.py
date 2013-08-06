@@ -3,7 +3,9 @@ import logging
 from flask import Flask
 from flask import abort
 from flask import render_template
+from flask import redirect
 from flask import request
+from flask import url_for
 from flask.ext import pymongo
 import yaml
 
@@ -95,14 +97,7 @@ def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
 
 @app.route('/')
 def _index():
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
-    spec = {'levelno': {'$gte': levelno},
-            'extra.request_id': {'$exists': 1}}
-    counts, logs = get_logs(spec=spec, limit=limit, page=page)
-    pages = counts / limit + 1
-    return render_template('index.html', **locals())
+    return redirect(url_for('_requests_index'))
 
 @app.route('/requests')
 def _requests_index():
@@ -126,6 +121,17 @@ def _requests_show(request_id):
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())
+
+@app.route('/logs')
+def _logs_index():
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {'levelno': {'$gte': levelno},
+            'extra.request_id': {'$exists': 1}}
+    counts, logs = get_logs(spec=spec, limit=limit, page=page)
+    pages = counts / limit + 1
+    return render_template('index.html', **locals())
 
 @app.route('/logs/<ObjectId:log_id>')
 def _logs_show(log_id):

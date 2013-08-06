@@ -12,7 +12,7 @@
   {% endfor %}
   <div class="mode">
       <a href="{{ url_for('_requests_index', limit=limit, levelno=10) }}">Request List</a>
-      <a href="{{ url_for('_index', limit=limit, levelno=20) }}">Log List</a>
+      <a href="{{ url_for('_logs_index', limit=limit, levelno=20) }}">Log List</a>
   </div>
   <div class="query">
     <form method="GET">
