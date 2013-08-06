@@ -10,6 +10,9 @@
         <th>Date</th>
         <th>Host</th>
         <th>Binary</th>
+        <th>Project</th>
+        <th>User</th>
+        <th>Remote Address</th>
         <th>Request_id</th>
         <th>Level</th>
         <th>Message</th>
@@ -19,11 +22,16 @@
         <td>{{ log.time }}</td>
         <td>{{ log.hostname }}</td>
         <td>{{ log.binary }}</td>
-        <td>{%- if log.extra -%}
-            {%- if log.extra.request_id -%}
-            {{ j.render_requesturl(log.extra.request_id) }}
-            {%- endif -%}
-            {%- endif -%}</td>
+        {%- if log.extra -%}
+        <td>{{ log.extra.get('project_name','') }}</td>
+        <td>{{ log.extra.get('user_name','') }}</td>
+        <td>{{ log.extra.get('remote_address','') }}</td>
+        <td>{%- if log.extra.request_id -%}
+        {{ j.render_requesturl(log.extra.request_id) }}
+        {%- endif -%}</td>
+        {%- else -%}
+        <td/><td/><td/><td/>
+        {%- endif -%}
         <td>{{ log.levelname }}</td>
         <td class="message"><a href="{{ url_for('_logs_show', log_id=log._id) }}">{{ log.message }}</a></td>
     </tr>
