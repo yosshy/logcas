@@ -2,14 +2,14 @@
 
 from distutils.core import setup
 
-setup(name='LogDAS',
+setup(name='LogCAS',
       version='0.1',
-      description='Log Analyzer for OpenStack',
+      description='Log Collecting and Analyzing System for OpenStack',
       author='Akira Yoshiyama',
       author_email='akirayoshiyama@gmail.com',
-      url='https://github.com/yosshy/logdas',
-      packages=['logdas', 'logdas.logger'],
-      package_dir={'logdas': 'logdas',
-                   'logdas.logger': 'logdas/logger'},
-      package_data={'logdas': ['static/*', 'templates/*']},
+      url='https://github.com/yosshy/logcas',
+      packages=['logcas', 'logcas.logger'],
+      package_dir={'logcas': 'logcas',
+                   'logcas.logger': 'logcas/logger'},
+      package_data={'logcas': ['static/*', 'templates/*']},
      )

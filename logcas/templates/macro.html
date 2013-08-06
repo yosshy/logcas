@@ -15,13 +15,20 @@
 {%- if page > 1 -%}
 {{ render_current_pageurl(page - 1, "prev") }}
 {%- endif -%}
+
 {%- for p in range(1, pages + 1) -%}
+{%- if p > page -%}
+{%- set diff = p - page -%}
+{%- else -%}
+{%- set diff = page - p -%}
+{%- endif -%}
 {%- if p == page %}
 {{ p }}
 {%- else %}
 {{ render_current_pageurl(p, p) }}
 {%- endif -%}
 {%- endfor -%}
+
 {%- if page < pages %}
 {{ render_current_pageurl(page + 1, "next") }}
 {%- endif -%}

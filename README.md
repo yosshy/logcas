@@ -1,4 +1,4 @@
-logdas
+logCAS
 ======
 
-LogDAS: Log Collecting and Analyzing System for OpenStack
+LogCAS: Log Collecting and Analyzing System for OpenStack
