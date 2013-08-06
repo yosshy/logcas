@@ -30,7 +30,7 @@ DEFAULT_COLUMNS = {
     'binary',
     'extra.request_id',
     'extra.remote_address',
-    'extra.tenant',
+    'extra.project_name',
     'extra.user_name',
 }
 
