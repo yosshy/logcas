@@ -3,9 +3,7 @@
 
 {% block body %}
 <H2>Request ID: {{request_id}}</H2>
-<div class="pager">
 {{ j.render_pagination(pages, page) }}
-</div>
 <table>
     <tr>
         <th>Date/Time</th>
@@ -24,7 +22,5 @@
     </tr>
     {% endfor %}
 </table>
-<div class="pager">
 {{ j.render_pagination(pages, page) }}
-</div>
 {% endblock %}

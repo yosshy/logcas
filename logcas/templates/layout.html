@@ -11,24 +11,35 @@
     <div class=flash>{{ message }}</div>
   {% endfor %}
   <div class="mode">
-      <a href="{{ url_for('_request_index', limit=limit, levelno=10) }}">Request List</a>
-      <a href="{{ url_for('_log_index', limit=limit, levelno=20) }}">Log List</a>
+      {%- set request_mode = "" -%}
+      {%- set log_mode = "" -%}
+      {%- if request.path.startswith('/logs') -%}
+      {%- set log_mode = "selected" -%}
+      {%- else -%}
+      {%- set request_mode = "selected" -%}
+      {%- endif -%}
+      <a class="{{request_mode}}" href="{{ url_for('_request_index', limit=limit, levelno=10) }}">Request List</a>
+      <a class="{{log_mode}}" href="{{ url_for('_log_index', limit=limit, levelno=20) }}">Log List</a>
   </div>
-  <div class="query">
-    <form method="GET">
+  <div class="body">
+    <div class="query">
+      <form method="GET">
       <input type="text" size="3" maxlength="3" name="limit" value="{{ limit }}" /> entries per page
       {%- set levelmap = [(10, "Debug"), (20, "Info"), (21, "Audit"), (30, "Warning"), (40, "Error"), (50, "Critical")] -%}
       {%- for key, value in levelmap -%}
       {%- if levelno == key %}
-      <input type="radio" name="levelno" value="{{key}}" checked="checked">{{value}}</input>
-      {%- else %}
-      <input type="radio" name="levelno" value="{{key}}">{{value}}</input>
-      {%- endif -%}
+      {%- set checked='checked="checked"' -%}
+      {%- else -%}
+      {%- set checked='' -%}
+      {%- endif %}
+      <span><input type="radio" name="levelno" value="{{key}}" id="r{{key}}" {{checked}}/>
+          <label for="r{{key}}">{{value}}</label></span>
       {%- endfor -%}
       <input type="submit"/>
-    </form>
+      </form>
+    </div>
+    {% block body %}{% endblock %}
   </div>
-  {% block body %}{% endblock %}
 </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 body {
-    background-color: #E0E0E0;
+    background-color: LightSlateGray;
 }
 a:link {
     color: black;
@@ -11,7 +11,7 @@ form input {
     text-align: right;
 }
 table {
-    background-color: #A0A0A0;
+    background-color: LightSteelBlue;
     border-width: 2;
     border-style: solid;
     border-color: black;
@@ -68,5 +68,45 @@ div.dump {
 }
 
 pre {
-    padding: 5pt;
+    padding: 5px;
+}
+
+div.mode {
+    padding: 10px;
+}
+div.mode a {
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+    background-color: LightBlue;
+}
+div.mode a.selected {
+    padding: 10px;
+    background-color: LightSteelBlue;
+}
+div.body {
+    padding: 5px;
+    background-color: LightSteelBlue;
+    border-radius: 5px;
+}
+div.query {
+    padding: 5px;
+}
+div.query span {
+    padding: 5px;
+    background-color: #E0E0E0;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+div.pager {
+    padding: 10px;
+    /* word-spacing: 5px; */
+    background-color: LightSteelBlue;
+}
+div.pager a,span {
+    background-color: #E0E0E0;
+    padding: 3px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 }

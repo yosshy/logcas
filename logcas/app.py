@@ -25,7 +25,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 mongo = pymongo.PyMongo(app)
-yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(
+            u'tag:yaml.org,2002:str', value))
 
 DEFAULT_COLUMNS = {
     'time',

@@ -15,7 +15,8 @@
 {%- set NEXT = ">>" -%}
 
 {%- if pages > 1 -%}
-
+<div class="pager">
+Page:
 {% if page > 10 %}
 {{ render_current_pageurl(1, "1") }}
 {{ render_current_pageurl(page - 10, PREV) }}
@@ -32,7 +33,7 @@
 {%- endif -%}
 {%- for p in range(_start, _end + 1) -%}
 {%- if p == page %}
-{{ p }}
+<span>{{ p }}</span>
 {%- else %}
 {{ render_current_pageurl(p, p) }}
 {%- endif -%}
@@ -43,5 +44,6 @@
 {{ render_current_pageurl(pages, pages) }}
 {%- endif -%}
 
+</div>
 {%- endif -%}
 {%- endmacro %}
