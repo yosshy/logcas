@@ -14,12 +14,15 @@ ASC = pymongo.ASCENDING
 DESC = pymongo.DESCENDING
 DEFAULT_ORDER = ASC
 
+MONGO_DBNAME = 'fluentd'
+#MONGO_HOST = 'localhost'
+#MONGO_PORT = '27017'
+#MONGO_USERNAME = 'foo'
+#MONGO_PASSWORD = 'bar'
+
+
 app = Flask(__name__)
-app.config['MONGO_DBNAME'] = 'fluentd'
-#app.config['MONGO_HOST'] = 'localhost'
-#app.config['MONGO_PORT'] = '27017'
-#app.config['MONGO_USERNAME'] = 'foo'
-#app.config['MONGO_PASSWORD'] = 'bar'
+app.config.from_object(__name__)
 
 mongo = pymongo.PyMongo(app)
 yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
