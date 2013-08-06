@@ -13,8 +13,6 @@ form input {
 table {
     background-color: Purple;
     border-width: 2;
-    /* border-style: solid; */
-    border-color: black;
     width: 100%;
 }
 tr {
@@ -77,7 +75,7 @@ div.mode {
 div.mode a {
     padding: 10px;
     border-radius: 5px 5px 0 0;
-    background-color: LightBlue;
+    background-color: DodgerBlue;
 }
 div.mode a.selected {
     padding: 10px;
@@ -87,6 +85,8 @@ div.body {
     padding: 5px;
     background-color: LightSteelBlue;
     border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 div.query {
     padding: 5px;
