@@ -20,7 +20,7 @@
         <td>{{ log.hostname }}</td>
         <td>{{ log.binary }}</td>
         <td>{{ log.levelname }}</td>
-        <td class="message"><a href="{{ url_for('_logs_show', log_id=log._id) }}">{{ log.message }}</a></td>
+        <td class="message"><a href="{{ url_for('_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>

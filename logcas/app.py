@@ -97,10 +97,10 @@ def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
 
 @app.route('/')
 def _index():
-    return redirect(url_for('_requests_index'))
+    return redirect(url_for('_request_index'))
 
 @app.route('/requests')
-def _requests_index():
+def _request_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -112,7 +112,7 @@ def _requests_index():
     return render_template('request_index.html', **locals())
 
 @app.route('/requests/<request_id>')
-def _requests_show(request_id):
+def _request_show(request_id):
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -123,7 +123,7 @@ def _requests_show(request_id):
     return render_template('request_show.html', **locals())
 
 @app.route('/logs')
-def _logs_index():
+def _log_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -134,7 +134,7 @@ def _logs_index():
     return render_template('index.html', **locals())
 
 @app.route('/logs/<ObjectId:log_id>')
-def _logs_show(log_id):
+def _log_show(log_id):
     spec = {'_id': log_id}
     log = mongo.db.logs.find_one_or_404(spec)
     log.pop('_id')
