@@ -27,7 +27,7 @@ app.config.from_object(__name__)
 
 mongo = pymongo.PyMongo(app)
 yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(
-            u'tag:yaml.org,2002:str', value))
+    u'tag:yaml.org,2002:str', value))
 
 DEFAULT_COLUMNS = {
     'time',
@@ -53,11 +53,13 @@ LEVELMAP = {
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
 
+
 def columns_to_fields(columns=[]):
     result = {}
     for column in columns:
         result[column] = 1
     return result
+
 
 def get_logs(spec={}, columns=DEFAULT_COLUMNS,
              page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
@@ -67,14 +69,17 @@ def get_logs(spec={}, columns=DEFAULT_COLUMNS,
         abort(400)
     fields = columns_to_fields(columns)
     logs = mongo.db.logs.find(
-                        spec=spec,
-                        fields=fields,
-                        sort=[('_id', order)],
-                        limit=limit,
-                        skip=(page - 1) * limit)
+        spec=spec,
+        fields=fields,
+        sort=[('_id', order)],
+        limit=limit,
+        skip=(page - 1) * limit)
     return logs.count(), logs
 
-def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
+
+def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT,
+                     order=DEFAULT_ORDER):
+
     if page < 1:
         abort(400)
     if order not in [ASC, DESC]:
@@ -92,17 +97,19 @@ def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
             "endtime": {"$max": "$time"},
         }},
         {"$sort": {'starttime': order}},
-        ])['result']
+    ])['result']
     start = (page - 1) * limit
     last = page * limit
     new_logs = logs[start:last]
     for log in new_logs:
-        log['levelname'] = LEVELMAP.get(log['maxlevelno'],'')
+        log['levelname'] = LEVELMAP.get(log['maxlevelno'], '')
     return len(logs), new_logs
+
 
 @app.route('/')
 def _index():
     return redirect(url_for('_request_index'))
+
 
 @app.route('/requests')
 def _request_index():
@@ -116,6 +123,7 @@ def _request_index():
     pages = counts / limit + 1
     return render_template('request_index.html', **locals())
 
+
 @app.route('/requests/<request_id>')
 def _request_show(request_id):
     page = int(request.args.get('page', 1))
@@ -127,6 +135,7 @@ def _request_show(request_id):
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())
 
+
 @app.route('/logs')
 def _log_index():
     page = int(request.args.get('page', 1))
@@ -137,6 +146,7 @@ def _log_index():
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('log_index.html', **locals())
+
 
 @app.route('/logs/<ObjectId:log_id>')
 def _log_show(log_id):
