@@ -135,7 +135,7 @@ def _log_index():
             'extra.request_id': {'$exists': 1}}
     counts, logs = get_logs(spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
-    return render_template('index.html', **locals())
+    return render_template('log_index.html', **locals())
 
 @app.route('/logs/<ObjectId:log_id>')
 def _log_show(log_id):
