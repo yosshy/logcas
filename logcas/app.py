@@ -14,7 +14,8 @@ ASC = pymongo.ASCENDING
 DESC = pymongo.DESCENDING
 DEFAULT_ORDER = ASC
 
-MONGO_DBNAME = 'fluentd'
+#MONGO_DBNAME = 'fluentd'
+MONGO_DBNAME = 'archive'
 #MONGO_HOST = 'localhost'
 #MONGO_PORT = '27017'
 #MONGO_USERNAME = 'foo'
