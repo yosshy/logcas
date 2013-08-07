@@ -18,6 +18,9 @@
       {%- else -%}
       {%- set request_mode = "selected" -%}
       {%- endif -%}
+      {%- if not limit -%}
+      {%- set limit = 100 -%}
+      {%- endif -%}
       <a class="{{request_mode}}" href="{{ url_for('_request_index', limit=limit, levelno=10) }}">Request List</a>
       <a class="{{log_mode}}" href="{{ url_for('_log_index', limit=limit, levelno=20) }}">Log List</a>
   </div>
