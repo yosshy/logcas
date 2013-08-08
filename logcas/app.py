@@ -9,8 +9,10 @@ from flask import redirect
 from flask import request
 from flask import url_for
 from flask.ext import pymongo
+from flaskext import apiform
 import yaml
 
+import pprint
 
 TIMEZONE = tz.tzlocal()
 
@@ -54,6 +56,8 @@ LEVELMAP = {
     logging.CRITICAL: "CRITICAL",
 }
 
+ALLOWED_LEVELNO = [str(x) for x in LEVELMAP.keys()]
+
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
 
@@ -84,8 +88,6 @@ def get_logs(col, spec={}, columns=DEFAULT_COLUMNS,
 def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT,
                      order=DEFAULT_ORDER):
 
-    if page < 1:
-        abort(400)
     if order not in [ASC, DESC]:
         abort(400)
     logs = col.aggregate([
@@ -115,12 +117,23 @@ def _localtime_filter(dtime):
     return dtime.astimezone(TIMEZONE)
 
 
+class Validator(apiform.Form):
+    # IntField validator doesn't work now...
+    page = apiform.NumField(required=False, min=1)
+    limit = apiform.NumField(required=False, min=10, max=200)
+    levelno = apiform.IntField(required=False, allowed=ALLOWED_LEVELNO)
+
+
 @app.route('/')
 def _index():
     return redirect(url_for('_request_index'))
 
+
 @app.route('/requests')
 def _request_index():
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -135,6 +148,9 @@ def _request_index():
 
 @app.route('/requests/<request_id>')
 def _request_show(request_id):
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -148,6 +164,9 @@ def _request_show(request_id):
 
 @app.route('/logs')
 def _log_index():
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -167,8 +186,12 @@ def _log_show(log_id):
     log_yaml = yaml.dump(log, width=200, default_flow_style=False)
     return render_template('log_show.html', **locals())
 
+
 @app.route('/archived/requests')
 def _archived_request_index():
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -183,6 +206,9 @@ def _archived_request_index():
 
 @app.route('/archived/requests/<request_id>')
 def _archived_request_show(request_id):
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -196,6 +222,9 @@ def _archived_request_show(request_id):
 
 @app.route('/archived/logs')
 def _archived_log_index():
+    form = Validator(request)
+    if not form.validate():
+        abort(422)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -217,4 +246,3 @@ def _archived_log_show(log_id):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
-
