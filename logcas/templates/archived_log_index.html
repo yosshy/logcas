@@ -27,13 +27,13 @@
         <td>{%- if log.extra.request_id -%}
         {%- set ln = request.args.get('levelno', 10) -%}
         {%- set rid = log.extra.get('request_id', '') -%}
-        <a href="{{url_for('_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a>
+        <a href="{{url_for('_archived_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a>
         {%- endif -%}</td>
         {%- else -%}
         <td/><td/><td/><td/>
         {%- endif -%}
         <td>{{ log.levelname }}</td>
-        <td class="message"><a href="{{ url_for('_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
+        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>

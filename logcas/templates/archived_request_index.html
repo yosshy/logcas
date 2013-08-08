@@ -27,7 +27,7 @@
         <td>{{ log.remote_address }}</td>
         {%- set ln = request.args.get('levelno', 10) -%}
         {%- set rid = log._id -%}
-        <td class="message"><a href="{{url_for('_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a></td>
+        <td class="message"><a href="{{url_for('_archived_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a></td>
     </tr>
     {% endfor %}
 </table>

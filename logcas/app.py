@@ -1,4 +1,6 @@
 import logging
+from datetime import datetime
+from dateutil import tz
 
 from flask import Flask
 from flask import abort
@@ -10,12 +12,13 @@ from flask.ext import pymongo
 import yaml
 
 
+TIMEZONE = tz.tzlocal()
+
 ASC = pymongo.ASCENDING
 DESC = pymongo.DESCENDING
 DEFAULT_ORDER = ASC
 
-#MONGO_DBNAME = 'fluentd'
-MONGO_DBNAME = 'archive'
+MONGO_DBNAME = 'fluentd'
 #MONGO_HOST = 'localhost'
 #MONGO_PORT = '27017'
 #MONGO_USERNAME = 'foo'
@@ -26,6 +29,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 mongo = pymongo.PyMongo(app)
+
 yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(
     u'tag:yaml.org,2002:str', value))
 
@@ -61,14 +65,14 @@ def columns_to_fields(columns=[]):
     return result
 
 
-def get_logs(spec={}, columns=DEFAULT_COLUMNS,
+def get_logs(col, spec={}, columns=DEFAULT_COLUMNS,
              page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
     if page < 1:
         abort(400)
     if order not in [ASC, DESC]:
         abort(400)
     fields = columns_to_fields(columns)
-    logs = mongo.db.logs.find(
+    logs = col.find(
         spec=spec,
         fields=fields,
         sort=[('_id', order)],
@@ -77,14 +81,14 @@ def get_logs(spec={}, columns=DEFAULT_COLUMNS,
     return logs.count(), logs
 
 
-def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT,
+def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT,
                      order=DEFAULT_ORDER):
 
     if page < 1:
         abort(400)
     if order not in [ASC, DESC]:
         abort(400)
-    logs = mongo.db.logs.aggregate([
+    logs = col.aggregate([
         {"$match": spec},
         {"$group": {
             "_id": "$extra.request_id",
@@ -106,10 +110,14 @@ def get_grouped_logs(spec={}, page=1, limit=DEFAULT_LIMIT,
     return len(logs), new_logs
 
 
+@app.template_filter('localtime')
+def _localtime_filter(dtime):
+    return dtime.astimezone(TIMEZONE)
+
+
 @app.route('/')
 def _index():
     return redirect(url_for('_request_index'))
-
 
 @app.route('/requests')
 def _request_index():
@@ -119,7 +127,8 @@ def _request_index():
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
-    counts, logs = get_grouped_logs(spec=spec, page=page, limit=limit)
+    counts, logs = get_grouped_logs(mongo.db.logs,
+                                    spec=spec, page=page, limit=limit)
     pages = counts / limit + 1
     return render_template('request_index.html', **locals())
 
@@ -131,7 +140,8 @@ def _request_show(request_id):
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
-    counts, logs = get_logs(spec=spec, limit=limit, page=page)
+    counts, logs = get_logs(mongo.db.logs,
+                            spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('request_show.html', **locals())
 
@@ -143,7 +153,8 @@ def _log_index():
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
     spec = {'levelno': {'$gte': levelno},
             'extra.request_id': {'$exists': 1}}
-    counts, logs = get_logs(spec=spec, limit=limit, page=page)
+    counts, logs = get_logs(mongo.db.logs,
+                            spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
     return render_template('log_index.html', **locals())
 
@@ -156,5 +167,54 @@ def _log_show(log_id):
     log_yaml = yaml.dump(log, width=200, default_flow_style=False)
     return render_template('log_show.html', **locals())
 
+@app.route('/archived/requests')
+def _archived_request_index():
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {"extra.request_id": {"$exists": 1},
+            "extra.user_id": {"$ne": None},
+            "levelno": {"$gte": levelno}}
+    counts, logs = get_grouped_logs(mongo.db.archived_logs,
+                                    spec=spec, page=page, limit=limit)
+    pages = counts / limit + 1
+    return render_template('archived_request_index.html', **locals())
+
+
+@app.route('/archived/requests/<request_id>')
+def _archived_request_show(request_id):
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {'extra.request_id': request_id,
+            'levelno': {'$gte': levelno}}
+    counts, logs = get_logs(mongo.db.archived_logs,
+                            spec=spec, limit=limit, page=page)
+    pages = counts / limit + 1
+    return render_template('archived_request_show.html', **locals())
+
+
+@app.route('/archived/logs')
+def _archived_log_index():
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', DEFAULT_LIMIT))
+    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    spec = {'levelno': {'$gte': levelno},
+            'extra.request_id': {'$exists': 1}}
+    counts, logs = get_logs(mongo.db.archived_logs,
+                            spec=spec, limit=limit, page=page)
+    pages = counts / limit + 1
+    return render_template('archived_log_index.html', **locals())
+
+
+@app.route('/archived/logs/<ObjectId:log_id>')
+def _archived_log_show(log_id):
+    spec = {'_id': log_id}
+    log = mongo.db.archived_logs.find_one_or_404(spec)
+    log.pop('_id')
+    log_yaml = yaml.dump(log, width=200, default_flow_style=False)
+    return render_template('archived_log_show.html', **locals())
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
+

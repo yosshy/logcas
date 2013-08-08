@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% import "macro.html" as j with context %}
+
+{% block body %}
+<H2>Request ID: {{request_id}}</H2>
+{{ j.render_pagination(pages, page) }}
+<table>
+    <tr>
+        <th>Date/Time</th>
+        <th>Host</th>
+        <th>Binary</th>
+        <th>Level</th>
+        <th>Message</th>
+    </tr>
+    {% for log in logs %}
+    <tr class="{{ log.levelname }}">
+        <td>{{ log.time }}</td>
+        <td>{{ log.hostname }}</td>
+        <td>{{ log.binary }}</td>
+        <td>{{ log.levelname }}</td>
+        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{{ j.render_pagination(pages, page) }}
+{% endblock %}
