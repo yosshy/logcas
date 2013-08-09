@@ -5,7 +5,9 @@ from outputs.mongodb import Mongodb
 
 def timestamp(event):
     from datetime import datetime
+    import time
     event.time = datetime.today()
+    event.created = int(time.mktime(event.time.timetuple()))
 
 Zeromq()
 Json()
