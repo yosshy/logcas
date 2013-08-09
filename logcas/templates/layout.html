@@ -17,7 +17,7 @@
       {%- set tabs = [('Requests', '_request_index', 30),
                       ('Logs', '_log_index', 30),
                       ('Requests(Archived)', '_archived_request_index', 10),
-                      ('Logs(Archived)', '_archived_log_index', 10)] -%}
+                      ('Logs(Archived)', '_archived_log_index', 30)] -%}
       {%- for display, method, levelno in tabs -%}
       {%- set selected = "" -%}
       {%- if request.path.startswith(url_for(method)) -%}
