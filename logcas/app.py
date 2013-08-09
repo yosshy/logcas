@@ -20,7 +20,7 @@ ASC = pymongo.ASCENDING
 DESC = pymongo.DESCENDING
 DEFAULT_ORDER = ASC
 
-MONGO_DBNAME = 'fluentd'
+MONGO_DBNAME = 'logcas'
 #MONGO_HOST = 'localhost'
 #MONGO_PORT = '27017'
 #MONGO_USERNAME = 'foo'
@@ -170,8 +170,7 @@ def _log_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
-    spec = {'levelno': {'$gte': levelno},
-            'extra.request_id': {'$exists': 1}}
+    spec = {'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -228,8 +227,7 @@ def _archived_log_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
-    spec = {'levelno': {'$gte': levelno},
-            'extra.request_id': {'$exists': 1}}
+    spec = {'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.archived_logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
