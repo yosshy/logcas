@@ -234,7 +234,7 @@ switched to db logcas
 
 ## 使用法
 
-Web ブラウザで http://<WebAPサーバ>:5000/ にアクセスしてみます。
+Web ブラウザで http://＜WebAPサーバ＞:5000/ にアクセスしてみます。
 
 ## ライセンス
 
