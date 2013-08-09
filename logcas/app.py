@@ -62,7 +62,7 @@ ALLOWED_LEVELNO = [str(x) for x in LEVELMAP.keys()]
 
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
-DEFAULT_SPAN = 60
+DEFAULT_SPAN = 10
 
 
 def columns_to_fields(columns=[]):
