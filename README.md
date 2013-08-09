@@ -1,6 +1,6 @@
-======
-LogCAS
-======
+# LogCAS
+
+## はじめに
 
 このツールは OpenStack 各コンポーネント用のログ収集・解析システムです。
 本ツールを使用する事で障害発生時のログ解析作業が迅速に行えるようになり、
@@ -11,8 +11,7 @@ LogCAS は Log Collecting and Analyzing System for OpenStack の略ですが、
 集中です。
 
 
-主要機能
-========
+## 主要機能
 
 LogCAS には以下の機能があります。
 
@@ -31,15 +30,13 @@ LogCAS には以下の機能があります。
 * ログレベル機能：表示するログの最低レベルを指定
 
 
-スクリーンショット
-=================
+## スクリーンショット
 
 https://github.com/yosshy/logcas/tree/master/screenshots を参照して下さ
 い。
 
 
-基本構成
-========
+## 基本構成
 
 LogCAS はOpenStack コンポーネントのログファイルをFluentd 又は LogCabin
 によって MongoDB に保存し、それを Flask の Web アプリケーションで表示す
@@ -57,11 +54,9 @@ Fluentd と LogCabin は併用可能ではありますが、通常はいずれ�
 * Flask-PyMongo: http://flask-pymongo.readthedocs.org/en/latest/
 
 
-インストールと設定
-==================
+## インストールと設定
 
-LogCAS WebAP サーバ
--------------------
+### LogCAS WebAP サーバ
 
 現時点では特別なインストーラはありません。tar.gz ファイルの場合は tar
 で、ZIP ファイルの場合は unzip コマンド等でファイルを解凍し、適当なディ
@@ -96,8 +91,7 @@ MONGO_PASSWORD = 'bar'
 ```
 
 
-ログサーバ
-----------
+### ログサーバ
 
 * Fluentd を使用する場合
 
@@ -128,8 +122,7 @@ MONGO_PASSWORD = 'bar'
   # logcabin -c mongosaver.py &
   ```
 
-OpenStack 各サーバ
-------------------
+### OpenStack 各サーバ
 
 WebAP サーバと同様に LogCAS のファイルを展開し、logcas/logger 配下を
 Python のパスが通っている場所に配置して下さい。
@@ -220,8 +213,7 @@ LogCabin の場合、ZeroMQ の fork() 関連バグが原因で nova-api の実�
 # sudo service nova-scheduler start
 ```
 
-動作確認
-========
+## 動作確認
 
 ログサーバ上で mongo コマンドを実行し、当該データベース上にログがあるか
 調べます。
@@ -240,7 +232,10 @@ switched to db logcas
 770
 ```
 
-使用法
-======
+## 使用法
 
 Web ブラウザで http://<WebAPサーバ>:5000/ にアクセスしてみます。
+
+## ライセンス
+
+Apache License ver.2.0
