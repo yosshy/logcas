@@ -130,6 +130,8 @@ class Validator(apiform.Form):
     page = apiform.NumField(required=False, min=1)
     limit = apiform.NumField(required=False, min=10, max=200)
     levelno = apiform.IntField(required=False, allowed=ALLOWED_LEVELNO)
+    created = apiform.NumField(required=False, min=0)
+    span = apiform.NumField(required=False, min=1, max=120)
 
 
 @app.route('/')
