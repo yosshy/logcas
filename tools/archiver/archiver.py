@@ -8,7 +8,7 @@ from pymongo import MongoClient
 # Basic parameters
 MONGO_HOST = "localhost"
 MONGO_PORT = 27017
-MONGO_DB = "fluentd"
+MONGO_DB = "logcas"
 
 ORIGIN_COLLECTION = "logs"
 ARCHIVE_COLLECTION = "archived_logs"
@@ -16,7 +16,7 @@ ARCHIVE_COLLECTION = "archived_logs"
 FAILED_LEVEL = logging.WARNING
 ARCHIVE_SIZE = 1 * 1024 * 1024 * 1024  # 1GB
 
-SCRIPT_LOG_LEVEL = logging.INFO
+SCRIPT_LOG_LEVEL = logging.DEBUG
 
 # Prepare logging object.
 logging.basicConfig(stream=sys.stderr)
@@ -44,9 +44,8 @@ requests = odb.aggregate([
     }},
     {"$group": {
         "_id": "$extra.request_id",
-        "maxlevelno": {"$max": "$levelno"},
-        "starttime": {"$min": "$created"},
-        "endtime": {"$max": "$created"},
+        "starttime": {"$min": "$time"},
+        "endtime": {"$max": "$time"},
     }},
 ])['result']
 LOG.info("%d requests" % len(requests))
@@ -66,7 +65,7 @@ for failed_log in failed_logs:
 related_requests = []
 for request in requests:
     for log in failed_logs:
-        if request['starttime'] <= log['created'] <= request['endtime']:
+        if request['starttime'] <= log['time'] <= request['endtime']:
             related_requests.append(request['_id'])
             break
 LOG.info("%d related requests" % len(related_requests))
@@ -93,6 +92,7 @@ for log in failed_logs:
         adb.save(log)
         log['archived'] = True
         odb.save(log)
+        LOG.debug("log id: %s" % log['_id'])
     except:
         pass
 
