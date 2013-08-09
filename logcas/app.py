@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from dateutil import tz
+import time
 
 from flask import Flask
 from flask import abort
@@ -37,6 +38,7 @@ yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(
 
 DEFAULT_COLUMNS = {
     'time',
+    'created',
     'message',
     'hostname',
     'levelname',
@@ -60,6 +62,7 @@ ALLOWED_LEVELNO = [str(x) for x in LEVELMAP.keys()]
 
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
+DEFAULT_SPAN = 60
 
 
 def columns_to_fields(columns=[]):
@@ -114,7 +117,12 @@ def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT,
 
 @app.template_filter('localtime')
 def _localtime_filter(dtime):
-    return dtime.astimezone(TIMEZONE)
+    return dtime.replace(microsecond=0, tzinfo=None)
+
+
+@app.template_filter('unixtime')
+def _unixtime_filter(dtime):
+    return int(time.mktime(dtime.timetuple()))
 
 
 class Validator(apiform.Form):
@@ -170,7 +178,13 @@ def _log_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    created = int(request.args.get('created', 0))
+    span = int(request.args.get('span', DEFAULT_SPAN))
     spec = {'levelno': {'$gte': levelno}}
+    if created:
+        spec.update({
+            'created': {"$gte": created - span, "$lte": created + span},
+        })
     counts, logs = get_logs(mongo.db.logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -227,7 +241,13 @@ def _archived_log_index():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    created = int(request.args.get('created', 0))
+    span = int(request.args.get('span', DEFAULT_SPAN))
     spec = {'levelno': {'$gte': levelno}}
+    if created:
+        spec.update({
+            'created': {"$gte": created - span, "$lte": created + span},
+        })
     counts, logs = get_logs(mongo.db.archived_logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1

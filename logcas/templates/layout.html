@@ -40,6 +40,10 @@
       <span><input type="radio" name="levelno" value="{{key}}" id="r{{key}}" {{checked}}/>
           <label for="r{{key}}">{{value}}</label></span>
       {%- endfor -%}
+      {%- if created -%}
+      <input type="hidden" name="created" value="{{created}}"/>
+      <input type="text" size="3" maxlength="3" name="span" value="{{ span }}" /> seconds
+      {%- endif -%}
       <input type="submit"/>
       </form>
     </div>

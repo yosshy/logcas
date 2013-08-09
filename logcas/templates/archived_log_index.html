@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% import "macro.html" as j with context %}
 
+{% macro render_clockurl(log) -%}
+{%- set ln = request.args.get('levelno', 10) -%}
+<a href="{{url_for('_archived_log_index', created=log.created, levelno=ln)}}">{{log.time|localtime}}</a>
+{%- endmacro %}
+
 {% block body %}
 {{ j.render_pagination(pages, page) }}
 <table>
@@ -17,7 +22,7 @@
     </tr>
     {% for log in logs %}
     <tr class="{{ log.levelname }}">
-        <td>{{ log.time }}</td>
+        <td>{{ render_clockurl(log) }}</td>
         <td>{{ log.hostname }}</td>
         <td>{{ log.binary }}</td>
         {%- if log.extra -%}
