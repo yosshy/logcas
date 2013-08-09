@@ -16,7 +16,7 @@ ARCHIVE_COLLECTION = "archived_logs"
 FAILED_LEVEL = logging.WARNING
 ARCHIVE_SIZE = 1 * 1024 * 1024 * 1024  # 1GB
 
-SCRIPT_LOG_LEVEL = logging.DEBUG
+SCRIPT_LOG_LEVEL = logging.INFO
 
 # Prepare logging object.
 logging.basicConfig(stream=sys.stderr)
