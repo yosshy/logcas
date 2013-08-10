@@ -73,26 +73,18 @@ def columns_to_fields(columns=[]):
 
 
 def get_logs(col, spec={}, columns=DEFAULT_COLUMNS,
-             page=1, limit=DEFAULT_LIMIT, order=DEFAULT_ORDER):
-    if page < 1:
-        abort(400)
-    if order not in [ASC, DESC]:
-        abort(400)
+             page=1, limit=DEFAULT_LIMIT):
     fields = columns_to_fields(columns)
     logs = col.find(
         spec=spec,
         fields=fields,
-        sort=[('_id', order)],
+        sort=[('_id', DEFAULT_ORDER)],
         limit=limit,
         skip=(page - 1) * limit)
     return logs.count(), logs
 
 
-def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT,
-                     order=DEFAULT_ORDER):
-
-    if order not in [ASC, DESC]:
-        abort(400)
+def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT):
     logs = col.aggregate([
         {"$match": spec},
         {"$group": {
@@ -105,7 +97,7 @@ def get_grouped_logs(col, spec={}, page=1, limit=DEFAULT_LIMIT,
             "starttime": {"$min": "$time"},
             "endtime": {"$max": "$time"},
         }},
-        {"$sort": {'starttime': order}},
+        {"$sort": {'starttime': DEFAULT_ORDER}},
     ])['result']
     start = (page - 1) * limit
     last = page * limit
