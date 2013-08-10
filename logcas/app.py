@@ -143,7 +143,7 @@ def _index():
 def _request_index():
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -160,7 +160,7 @@ def _request_index():
 def _request_show(request_id):
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -176,7 +176,7 @@ def _request_show(request_id):
 def _log_index():
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -206,7 +206,7 @@ def _log_show(log_id):
 def _archived_request_index():
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -223,7 +223,7 @@ def _archived_request_index():
 def _archived_request_show(request_id):
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
@@ -239,7 +239,7 @@ def _archived_request_show(request_id):
 def _archived_log_index():
     form = Validator(request)
     if not form.validate():
-        abort(422)
+        abort(400)
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', DEFAULT_LIMIT))
     levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
