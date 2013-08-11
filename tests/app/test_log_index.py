@@ -157,54 +157,54 @@ class LogIndexTestCase(testing.TestCase):
     # created
 
     def test_log_index_with_created_(self):
-        response = self.client.get(url_for('_log_index',created=""))
+        response = self.client.get(url_for('_log_index', created=""))
         self.assert400(response)
 
     def test_log_index_with_created_abc(self):
-        response = self.client.get(url_for('_log_index',created="abc"))
+        response = self.client.get(url_for('_log_index', created="abc"))
         self.assert400(response)
 
     def test_log_index_with_created_minus(self):
-        response = self.client.get(url_for('_log_index',created="-1"))
+        response = self.client.get(url_for('_log_index', created="-1"))
         self.assert400(response)
 
     def test_log_index_with_created_0(self):
-        response = self.client.get(url_for('_log_index',created="0"))
+        response = self.client.get(url_for('_log_index', created="0"))
         self.assert200(response)
         self.assertTemplateUsed('log_index.html')
 
     def test_log_index_with_created_now(self):
         now = datetime.today().strftime("%s")
-        response = self.client.get(url_for('_log_index',created=str(now)))
+        response = self.client.get(url_for('_log_index', created=str(now)))
         self.assert200(response)
         self.assertTemplateUsed('log_index.html')
 
     # span
 
     def test_log_index_with_span_(self):
-        response = self.client.get(url_for('_log_index',span=""))
+        response = self.client.get(url_for('_log_index', span=""))
         self.assert400(response)
 
     def test_log_index_with_span_abc(self):
-        response = self.client.get(url_for('_log_index',span="abc"))
+        response = self.client.get(url_for('_log_index', span="abc"))
         self.assert400(response)
 
     def test_log_index_with_span_0(self):
-        response = self.client.get(url_for('_log_index',span="0"))
+        response = self.client.get(url_for('_log_index', span="0"))
         self.assert400(response)
 
     def test_log_index_with_span_1(self):
-        response = self.client.get(url_for('_log_index',span="1"))
+        response = self.client.get(url_for('_log_index', span="1"))
         self.assert200(response)
         self.assertTemplateUsed('log_index.html')
 
     def test_log_index_with_span_120(self):
-        response = self.client.get(url_for('_log_index',span="120"))
+        response = self.client.get(url_for('_log_index', span="120"))
         self.assert200(response)
         self.assertTemplateUsed('log_index.html')
 
     def test_log_index_with_span_121(self):
-        response = self.client.get(url_for('_log_index',span="121"))
+        response = self.client.get(url_for('_log_index', span="121"))
         self.assert400(response)
 
 

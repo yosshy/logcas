@@ -13,6 +13,7 @@ import db
 
 DATA = []
 
+
 class LogShowTestCase(testing.TestCase):
 
     def create_app(self):

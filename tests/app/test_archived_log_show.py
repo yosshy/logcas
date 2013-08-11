@@ -13,6 +13,7 @@ import db
 
 DATA = []
 
+
 class ArchivedLogShowTestCase(testing.TestCase):
 
     def create_app(self):
@@ -51,14 +52,16 @@ class ArchivedLogShowTestCase(testing.TestCase):
         db.archived_logs.drop()
 
     def test_archived_log_show_with_saved_entries(self):
-        response = self.client.get(url_for('_archived_log_show', log_id=DATA[0]))
+        response = self.client.get(url_for('_archived_log_show',
+                                           log_id=DATA[0]))
         self.assert200(response)
         self.assertTemplateUsed('archived_log_show.html')
 
     # no param
 
     def test_archived_log_show_without_params(self):
-        response = self.client.get(url_for('_archived_log_show', log_id=ObjectId()))
+        response = self.client.get(url_for('_archived_log_show',
+                                           log_id=ObjectId()))
         self.assert404(response)
 
 
