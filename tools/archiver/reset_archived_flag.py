@@ -19,15 +19,19 @@ logging.basicConfig(stream=sys.stderr)
 LOG = logging.getLogger()
 LOG.setLevel(SCRIPT_LOG_LEVEL)
 
-# Prepare MongoDB client instance.
-client = MongoClient(MONGO_HOST, MONGO_PORT)
+def main():
+    # Prepare MongoDB client instance.
+    client = MongoClient(MONGO_HOST, MONGO_PORT)
 
-# Log database object in MongoDB.
-db = client[MONGO_DB]
+    # Log database object in MongoDB.
+    db = client[MONGO_DB]
 
-# Get non-archived failed logs.
-logs = db.logs.update(
-    {"archived": True},
-    {"$set": {"archived": False}},
-    multi=True)
-LOG.info("done.")
+    # Get non-archived failed logs.
+    logs = db.logs.update(
+        {"archived": True},
+        {"$set": {"archived": False}},
+        multi=True)
+    LOG.info("done.")
+
+if __name__ == "__main__":
+    main()
