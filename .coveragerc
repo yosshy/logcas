@@ -3,7 +3,7 @@
 branch = True
 
 [report]
-include = logcas/*
+include = logcas/*, tools/*
 ignore_errors = True
 
 [html]
