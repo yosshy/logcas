@@ -12,7 +12,7 @@ from flask import url_for
 from flask.ext import pymongo
 import yaml
 
-from logcas import apiform
+import apiform
 
 TIMEZONE = tz.tzlocal()
 
@@ -117,12 +117,12 @@ def _unixtime_filter(dtime):
 
 
 class Validator(apiform.Form):
-    # IntField validator doesn't work now...
-    page = apiform.NumField(required=False, min=1)
-    limit = apiform.NumField(required=False, min=10, max=200)
-    levelno = apiform.IntField(required=False, allowed=ALLOWED_LEVELNO)
-    created = apiform.NumField(required=False, min=0)
-    span = apiform.NumField(required=False, min=1, max=120)
+    page = apiform.IntField(min=1, default=1)
+    limit = apiform.IntField(min=10, max=200, default=DEFAULT_LIMIT)
+    levelno = apiform.IntField(allowed=ALLOWED_LEVELNO,
+                               default=DEFAULT_LEVELNO)
+    created = apiform.IntField(required=False, min=0, default=0)
+    span = apiform.IntField(min=1, max=120, default=DEFAULT_SPAN)
 
 
 @app.route('/')
@@ -135,9 +135,9 @@ def _request_index():
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -152,9 +152,9 @@ def _request_show(request_id):
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.logs,
@@ -168,11 +168,11 @@ def _log_index():
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
-    created = int(request.args.get('created', 0))
-    span = int(request.args.get('span', DEFAULT_SPAN))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
+    created = form.get('created')
+    span = form.get('span')
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
@@ -198,9 +198,9 @@ def _archived_request_index():
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -215,9 +215,9 @@ def _archived_request_show(request_id):
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.archived_logs,
@@ -231,11 +231,11 @@ def _archived_log_index():
     form = Validator(request)
     if not form.validate():
         abort(400)
-    page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', DEFAULT_LIMIT))
-    levelno = int(request.args.get('levelno', DEFAULT_LEVELNO))
-    created = int(request.args.get('created', 0))
-    span = int(request.args.get('span', DEFAULT_SPAN))
+    page = form.get('page')
+    limit = form.get('limit')
+    levelno = form.get('levelno')
+    created = form.get('created')
+    span = form.get('span')
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
