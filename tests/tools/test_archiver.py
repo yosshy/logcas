@@ -5,6 +5,8 @@ import unittest
 
 from bson.objectid import ObjectId
 from pymongo import MongoClient
+from pymongo.collection import Collection
+import mox
 
 from tools.archiver import archiver
 import logcas.app
@@ -56,10 +58,14 @@ class ArchiverTestCase(unittest.TestCase):
         odb.drop()
         adb.drop()
 
+    def setUp(self):
+        self.mox = mox.Mox()
+
     def tearDown(self):
         odb.drop()
         adb.drop()
-        pass
+        self.mox.VerifyAll()
+        self.mox.UnsetStubs()
 
     # no logs
     def test_without_log(self):
@@ -87,6 +93,17 @@ class ArchiverTestCase(unittest.TestCase):
         archiver.main()
         self.assertEqual(20, adb.find().count())
 
+    # many failed logs
+    def test_with_many_failed_logs(self):
+        now = datetime.today()
+        onesecond = timedelta(0, 1)
+        for i in range(0, 20):
+            for level in [DEBUG, INFO, AUDIT, WARN, ERROR, CRITICAL]:
+                self._save_dummy(now, level, str(i))
+                now = now + onesecond
+        archiver.main()
+        self.assertEqual(20 * 6, adb.find().count())
+
     # many logs with failed one.
     def test_with_many_logs_and_failed_one(self):
         now = datetime.today()
@@ -100,16 +117,47 @@ class ArchiverTestCase(unittest.TestCase):
         # 4 = 3 logs (DEBUG, INFO, AUDIT) + 1 log (ERROR)
         self.assertEqual(4, adb.find().count())
 
-    # many failed logs
-    def test_with_many_failed_logs(self):
+    # many logs with failed one and exceptions #1.
+    def test_with_many_logs_and_failed_one_with_exceptions_1(self):
         now = datetime.today()
+        self._save_dummy(now, ERROR, None)
         onesecond = timedelta(0, 1)
         for i in range(0, 20):
-            for level in [DEBUG, INFO, AUDIT, WARN, ERROR, CRITICAL]:
+            for level in [DEBUG, INFO, AUDIT]:
                 self._save_dummy(now, level, str(i))
                 now = now + onesecond
+        self.mox.StubOutWithMock(Collection, 'save')
+        Collection.save(mox.IgnoreArg()).AndRaise(Exception())
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndRaise(Exception())
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        self.mox.ReplayAll()
         archiver.main()
-        self.assertEqual(20 * 6, adb.find().count())
+
+    # many logs with failed one and exceptions #2.
+    def test_with_many_logs_and_failed_one_with_exceptions_2(self):
+        now = datetime.today()
+        self._save_dummy(now, ERROR, None)
+        onesecond = timedelta(0, 1)
+        for i in range(0, 20):
+            for level in [DEBUG, INFO, AUDIT]:
+                self._save_dummy(now, level, str(i))
+                now = now + onesecond
+        self.mox.StubOutWithMock(Collection, 'save')
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndRaise(Exception())
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndRaise(Exception())
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        Collection.save(mox.IgnoreArg()).AndReturn(None)
+        self.mox.ReplayAll()
+        archiver.main()
 
 if __name__ == '__main__':
     unittest.main()
