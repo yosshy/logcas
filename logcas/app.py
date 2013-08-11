@@ -10,10 +10,9 @@ from flask import redirect
 from flask import request
 from flask import url_for
 from flask.ext import pymongo
-from flaskext import apiform
 import yaml
 
-import pprint
+from logcas import apiform
 
 TIMEZONE = tz.tzlocal()
 
