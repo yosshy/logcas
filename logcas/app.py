@@ -145,12 +145,12 @@ def _index():
 
 @app.route('/requests')
 def _request_index():
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -162,12 +162,12 @@ def _request_index():
 
 @app.route('/requests/<request_id>')
 def _request_show(request_id):
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.logs,
@@ -178,14 +178,14 @@ def _request_show(request_id):
 
 @app.route('/logs')
 def _log_index():
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
-    created = args.created.data
-    span = args.span.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
+    created = forms.created.data
+    span = forms.span.data
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
@@ -208,12 +208,12 @@ def _log_show(log_id):
 
 @app.route('/archived/requests')
 def _archived_request_index():
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -225,12 +225,12 @@ def _archived_request_index():
 
 @app.route('/archived/requests/<request_id>')
 def _archived_request_show(request_id):
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.archived_logs,
@@ -241,14 +241,14 @@ def _archived_request_show(request_id):
 
 @app.route('/archived/logs')
 def _archived_log_index():
-    args = BasicForm(request.args)
-    if not args.validate():
+    forms = BasicForm(request.args)
+    if not forms.validate():
         abort(400)
-    page = args.page.data
-    limit = args.limit.data
-    levelno = args.levelno.data
-    created = args.created.data
-    span = args.span.data
+    page = forms.page.data
+    limit = forms.limit.data
+    levelno = forms.levelno.data
+    created = forms.created.data
+    span = forms.span.data
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
