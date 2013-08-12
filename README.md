@@ -1,52 +1,53 @@
 # LogCAS
 
-## はじめに
+This is a log collecting and analyzing system for OpenStack
+components.  You can use it to analyze logs on failures quickly and
+reduce time to determine problems.
 
-このツールは OpenStack 各コンポーネント用のログ収集・解析システムです。
-本ツールを使用する事で障害発生時のログ解析作業が迅速に行えるようになり、
-原因究明の工数を削減する事が出来ます。
-
-LogCAS は Log Collecting and Analyzing System for OpenStack の略ですが、
-略称ではつまらないので OpenStack の各コンポーネントのように良い名前を募
-集中です。
+LogCAS stands for "Log Collecting and Analyzing System" but it isn't a
+good name. So please name it nicely.
 
 
-## 主要機能
+## Features
 
-LogCAS には以下の機能があります。
+LogCAS has major features below:
 
-* ログ一覧：OpenStack のログを時系列に一覧表示
-* ログ詳細：１つのログの詳細情報を表示
-* リクエスト一覧：OpenStack のログをユーザリクエストID単位で一覧表示
-* リクエスト詳細：同一リクエストIDの一連のログを一覧表示
-* アーカイブ機能：WARNING 以上のログとその時刻に処理中だったユーザ操作
-  関連ログを MongoDB の同一データベース上の別コレクション(SQL DBのテー
-  ブルのようなもの）にコピー
+* List logs: list logs from OpenStack components by time series.
+* Display a log: print details of a log.
+* List requests: list logs per request ID.
+* Display a request: list logs for a user request by time series.
 
-各一覧機能には以下の機能があります。
+* Archive logs: copy logs with important logs (level >= WARNING) and
+                logs of user requests processing just at the time to
+                another collection in same database on MOngoDB.
 
-* ページャ: １画面辺りの表示件数を指定し、ページ間を移動
-* 時刻フィルタ：特定の時刻の前後一定時間(デフォルトは10秒)のログのみ表示
-* ホストフィルタ：特定のホストのログ一覧のみ表示
-* ログレベルフィルタ：表示するログの最低レベルを指定
-* テーマセレクタ：画面の配色を選択
+Each listing feature has capability below:
 
-
-## スクリーンショット
-
-https://github.com/yosshy/logcas/tree/master/screenshots を参照して下さ
-い。
+* Pagination: specify the number of entries per page and display links
+              for other pages.
+* Time filter: list logs between a period before/after seconds
+  specified.
+* Host filter: list logs from a host specified.
+* Log level filter: list logs with level >= spefified one.
+* Theme: select one from color themes.
 
 
-## 基本構成
+## Screenshots
 
-LogCAS はOpenStack コンポーネントのログファイルをFluentd 又は LogCabin
-によって MongoDB に保存し、それを Flask の Web アプリケーションで表示す
-るという構成になっています。
+See https://github.com/yosshy/logcas/tree/master/screenshots .
 
-Fluentd と LogCabin は併用可能ではありますが、通常はいずれかしか使用し
-ません。個人的には、各ログのタイムスタンプをログサーバ上のタイムスタン
-プで上書き出来る LogCabin をおすすめします（制限事項あり）。
+
+## Basic structure
+
+LogCAS does below:
+
+* Collects logs from OpenStack components via Fluentd or LogCabin.
+* Saves them into MongoDB.
+* Displays them by a web application using Flask framework.
+
+Fluent and LogCabin can co-exist but we usually use eather one.
+Personally, I like LogCabin because it can overwrite timestamp of logs
+on a log server (but it has a limitation described below).
 
 * MongoDB: http://www.mongodb.org/
 * Fluentd: http://fluentd.org/
@@ -58,14 +59,13 @@ Fluentd と LogCabin は併用可能ではありますが、通常はいずれ�
 * Flask-Testing: http://pythonhosted.org/Flask-Testing/
 
 
-## インストールと設定
+## Installation and Configuration
 
-### LogCAS WebAP サーバ
+### LogCAS Web Application Server
 
-LogCAS の WebAP は基本的に Flask アプリケーションですので、Flask と
-Flask-WTF, Flask-PyMongo パッケージをインストールします。ユニットテスト
-を実施する場合には Flask-Testing、blinker もインストールする必要があり
-ます。
+LogCAS web application is besically a Flask application, so you have
+to install Flask, Flask-WTK and Flask-PyMongo. If you want to run
+unittests, you have to install Flask-Testing and blinker too.
 
 ```
 # sudo pip install Flask
@@ -73,23 +73,22 @@ Flask-WTF, Flask-PyMongo パッケージをインストールします。ユニ�
 # sudo pip install Flask-WTF
 ```
 
-現時点では LogCAS 自身に特別なインストーラはありません。tar.gz ファイル
-の場合は tarで、ZIP ファイルの場合は unzip コマンド等でファイルを解凍し、
-適当なディレクトリ下に移動させて下さい。
+Currently, LogCAS has no installer. You have to extract its source
+codes with tar for *.tar.gz or unzip for *.ZIP, and move it into a
+suitable directory.
 
-ディレクトリ構成
+Directory structure:
 
 ```
 logcas/
-    + app.py : プログラム本体
-    + static/ : Web 静的コンテンツディレクトリ
-    |    \ *.css : Web スタイルシート群
-    \ templates/ : Web テンプレートディレクトリ
-         \ *.html : Web テンプレート群
+    + app.py : the web application
+    + static/ : a directory for static contents for web
+    |    \ *.css : web style sheets
+    \ templates/ : a directory for web templates
+         \ *.html : web templates
 ```
 
-app.py 中に MongoDB の設定を行う箇所がありますので、お使いの MongoDB に
-合わせて設定を行なって下さい。
+There are some parameters in app.py, so set them for your MongoDB.
 
 ```
 MONGO_DBNAME = 'logcas'
@@ -99,29 +98,29 @@ MONGO_USERNAME = 'foo'
 MONGO_PASSWORD = 'bar'
 ```
 
-設定が終わったら、app.py を実行して下さい。
+Run app.py after setting them.
+
 
 ```
 # python logcas/app.py
 ```
 
-### ログサーバ
+### Log Server
 
-ログサーバにMongoDB をインストールします(別ホストの MongoDB も使用可能
-です)。詳しくは
-http://docs.mongodb.org/manual/tutorial/install-mongodb-on-linux/ を参
-照して下さい。
+Install MongoDB on the log server (you can also use MongoDB on another
+server). See below:
+http://docs.mongodb.org/manual/tutorial/install-mongodb-on-linux/
 
-Fluentd の場合、ログ用コレクションの作成オプションに capped を選択出来
-ます。Capped コレクションとは一種のリングバッファで、コレクション（SQL
-DB におけるレコード）が指定されたサイズを超えると一番古いコレクションか
-ら破棄します。これによりログのサイズ管理から開放されます。
+With Fluentd, you can use "capped" option for MongoDB plugin. "capped
+collection" is a kind of ring buffer and the oldest log in the
+collection will be discarded when the collection get full. You don't
+have to mind the size of the collection.
 
-現時点では LogCabin に同様のオプションはないため、手作業で capped コレ
-クションを作成して下さい。これをしないとログ用コレクションが通常のコレ
-クションとして作成され、データベースファイルが際限なく肥大化します。
+Currently, MongoDB output of LogCabin has no option like it. So create
+a capped collection by yourself, or MongoDB will create a usual
+collection automatically and it will grow up unlimitedly.
 
-Capped コレクション作成例：
+How to create a capped collection:
 
 ```
 # mongo
@@ -133,64 +132,63 @@ switched to db logcas
 { "ok" : 1 }
 ```
 
-上記のサイズはバイト単位です。アーカイバを使うのであれば、マシンのメモ
-リ容量より少ないサイズにしてディスクI/O負荷を下げた方が良いでしょう。
+The unit of the size is byte. If you use LogCAS archiver, you can
+specify it smaller than RAM to reduce disk I/O.
 
-* Fluentd を使用する場合
+* Using Fluentd
 
-  Fluentd をインストールして下さい。細かい手順は Fluentd のドキュメント
-  を参照して下さい。
+  Install fluentd. See Fluentd documents for details.
 
-* LogCabin を使用する場合
+* Using LogCabin
 
-  LogCabin をインストールします。
+  Intall LogCabin.
 
   ```
   # sudo pip install logcabin
-  ```
+  ```	 
 
-  logcas/tools/logcabin/mongosaver.py を適当なディレクトリにインストー
-  ルし、以下の設定を編集します。
+  Copy logcas/tools/logcabin/mongosaver.py into a suitable directory
+  and configure it.
 
   ```
   Mongodb(database='logcas', collection='logs')`
   ```
 
-  設定の詳細は
+  See
   http://logcabin.readthedocs.org/en/latest/outputs.html#module-logcabin.outputs.mongodb
-  にあります。
-  設定が終わったら LogCabin を実行します。
+  for details. Run logcabin after setting it.
 
   ```
   # logcabin -c mongosaver.py &
   ```
 
-アーカイバを使う場合は、logcas/tools/archiver/archiver.py の設定を
-WebAP と同様に行い、cron やシェルスクリプト等で一定時間単位で実行するよ
-うにします。
+If you use the archiver, set parameters in
+logcas/tools/archiver/archiver.py like the web application and run it
+periodly with cron or a shell script.
 
 
-### OpenStack 各サーバ
+### OpenStack nodes
 
-WebAP サーバと同様に LogCAS のファイルを展開し、logcas/logger 配下を
-Python のパスが通っている場所に配置して下さい。
-/usr/local/lib/python2.7/dist-packages/logcas/logger 辺りが良いと思いま
-す。但し、__init__.py ファイルが必要ですので注意して下さい。
+Extract files as same as web application server and install files
+under logcas/logger into a suitable directory in Python path.
 
-ディレクトリ構成例
+/usr/local/lib/python2.7/dist-packages/logcas/logger is good for
+it. Make sure that __init__.py file is in it.
+
+A directory structure example:
 ```
 /usr/local/lib/python2.7/dist-packages/logcas/
-    + __init__.py … 空ファイル
+    + __init__.py ... an empty file
     \logger/
-        + __init__.py … 空ファイル
-        + fluent_logger.py …Fluentd 用 Python ロギングハンドラ
-        \ zmq_logger.py …LogCabin 用 Python ロギングハンドラ
+        + __init__.py ... an empty file
+        + fluent_logger.py ... Python logging handler for Fluentd
+        \ zmq_logger.py ... Python logging handler for…LogCabi
 ```
 
-次に、logcas/logger/etc_nova_logging.conf を /etc/nova/logging.conf に
-コピーし、必要な箇所を修正して下さい。
+Then, copy logcas/logger/etc_nova_logging.conf to
+/etc/nova/logging.conf and modify it if you need.
 
-* Fluentd を使用する場合
+* Using Fluentd
 
   ```
   [loggers]
@@ -198,11 +196,11 @@ Python のパスが通っている場所に配置して下さい。
 
   [handler_fluent]
   class = logcas.logger.fluent_logger.FluentHandler
-  # (カテゴリ名, ログサーバ名, ポート番号)
+  # (category, log server, port)
   args = ('app.nova', 'logserver.example.com', 24224)
   ```
   
-* LogCabin を使用する場合
+* Using LogCabin
 
   ```
   [loggers]
@@ -210,20 +208,20 @@ Python のパスが通っている場所に配置して下さい。
 
   [handler_zmq]
   class = logcas.logger.zmq_logger.ZmqHandler
-  # (ログサーバの ZeroMQ URL,)
-  # () 最後の, に注意！
+  # (ZeroMQ URL for the log server,)
+  # You need "," at the end of ()
   args = ('tcp://localhost:2120',)
   ```
     
-次に、これらが依存するパッケージやモジュールをインストールして下さい。
-使用する方のみで結構です。
+So, intall packages and modules they depend on. You need either you
+will use.
 
-* Fluentd 用ロギングハンドラ
+* For Python logging handler for Fluentd
 
-  fluent-logger (https://github.com/fluent/fluent-logger-python) に依存
-  しています。これを pip でインストールすると、環境によっては kombu パッ
-  ケージケージが古くて nova 各サービスが起動しなくなります。この場合、
-  kombu を最新版に更新して下さい。
+  it depends on fluent-logger
+  (https://github.com/fluent/fluent-logger-python). After installing
+  it, nova services may not run because kombu package is old. If so,
+  upgrade kombu package up to date.
   
   ```
   # sudo apt-get install python-pip python-dev build-essential
@@ -231,10 +229,10 @@ Python のパスが通っている場所に配置して下さい。
   # sudo pip install -U kombu
   ```
   
-* LogCabin 用ロギングハンドラ
+* For Python logging handler for LogCabin
 
-  pyzmq に依存していますが、これが最新の distribute や gevent を要求し
-  ます。一緒にインストールして下さい。
+  It depends on pyzmq but it requres newer distribute and
+  gevent. Install them at once.
 
   ```
   # sudo apt-get install python-pip python-dev build-essential \
@@ -244,27 +242,27 @@ Python のパスが通っている場所に配置して下さい。
   # sudo pip install pyzmq
   ```
   
-設定が終わったら、nova サービスを実行します。まずはコマンドラインで試し
-てみて、正常に動作するか確認します。
+Run nova services after the configration. Try to run them on a shell
+at first and make sure that they work.
 
 ```
 # sudo nova-scheduler
 ```
 
-LogCabin の場合、ZeroMQ の fork() 関連バグが原因で nova-api の実行に失
-敗します。仕方ないので、nova-api-os-compute やnova-api-metadata 等を使
-用して下さい。
+With LogCabin, nova-api fails to start because of fork()-related bug
+of ZeroMQ. So you must use nova-api-os-compute and nova-api-metadata
+to avoid it.
 
-正常に動作したら service コマンドで nova サービスを再起動して下さい。
+After they work, restart nova services with service command:
 
 ```
 # sudo service nova-scheduler start
 ```
 
-## 動作確認
+## Testing
 
-ログサーバ上で mongo コマンドを実行し、当該データベース上にログがあるか
-調べます。
+Run mongo command on the log server and check that there are logs on
+the collection.
 
 ```
 # mongo
@@ -280,52 +278,51 @@ switched to db logcas
 770
 ```
 
-## 使用法
+## Usage
 
-Web ブラウザで http://WebAPサーバ:5000/ にアクセスしてみます。
+Open http://WebApServer:5000/ on a web browser.
 
-タイトルの下にタブがあります。左から順に以下のようになっています。
+There are tabs under the title. See:
 
-* Requests: ユーザリクエスト毎のログ一覧
-* Logs: ログ一覧
-* Requests(Archived): アーカイブされたユーザリクエスト毎のログ一覧
-* Logs(Archived): アーカイブされたログ一覧
+* Requests: list logs per request IDs.
+* Logs: list logs by time series.
+* Requests(Archived): list archived logs per request IDs.
+* Logs(Archived): list archived logs by time series.
 
-※アーカイバを動かしていない限り、(Archived) のタブにはログが表示されま
-せん。
+Note: "(Archived)" tabs have no logs before the archiver runs.
 
-### ページャ、ログレベルフィルタ
+### Pagination, Log-level filter
 
-タブの下には１ページ辺りの表示件数と、表示するログの最低レベルを指定す
-る為のフォームがあります。これらを設定したら送信ボタンを押します。
+There are forms for a number of entries per page and lowest log-level.
+Set them and push the submit button.
 
-ログ件数が１ページに収まらない場合、上記フォームの直下とページの最下部
-にページ番号を指定する為のリンクが表示されます。現在のページの前後9ペー
-ジと、最初と最後のページ、10ページ前／後のページ用のリンクがページ数に
-応じて表示されます。
+If there are more entries than it, pagination links are displayed to
+specify the page number. The pagination can have links for next and
+previous 1-9 pages, jumping to 10 page before and after of the current
+and the first and the last depending on the current page number.
 
-### リクエスト詳細
+### List logs with same request ID
 
-ログ一覧中の各リクエストIDにはリンクが設定されており、クリックすると当
-該リクエストIDを持つ一連のログが一覧表示されます。
+Each request ID in a log list is a link and you will see log list with
+the request ID by time series if you click it.
 
-### 時刻フィルタ
+### Time filter
 
-ログ一覧表示中の時刻にはリンクが設定されており、クリックするとその時刻
-の前後一定時間（デフォルトでは 10秒）のログが表示されます。この場合のみ
-画面上部のフォーム部分に前後の時間範囲を秒数で指定する為のテキストフォー
-ムが表示されます。
+Each time in the log list is a link and you will see logs before/after
+a period (10 seconds by default) if you click it. In this case, you
+will see a text form to specify the period by second.
 
-### ホストフィルタ
 
-ログ一覧表示とリクエスト詳細一覧表示中のホスト名にはリンクが設定されて
-おり、クリックすると当該ホストのログのみ一覧表示します。
+### Host filter
 
-### テーマセレクタ
+Each hostname in the log list is a link and you will see logs from the
+host if you click it.
 
-画面右上にプルダウン型のフォームがあり、これを選択して「送信」ボタンを
-押すと画面の配色等が変更されます。
+### Theme selecter
 
-## ライセンス
+There is a select form at the right-up corner. Select a theme and push
+the submit button, and colors will be changed.
+
+## License
 
 Apache License ver.2.0
