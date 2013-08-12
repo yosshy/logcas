@@ -62,9 +62,6 @@ LEVELMAP = {
     logging.CRITICAL: "CRITICAL",
 }
 
-ALLOWED_LEVELNO = [str(x) for x in LEVELMAP.keys()]
-#ALLOWED_LEVELNO = LEVELMAP.keys()
-
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
 DEFAULT_SPAN = 10
@@ -129,7 +126,7 @@ class BasicForm(Form):
     limit = IntegerField('Limit', default=DEFAULT_LIMIT,
                          validators=[validators.NumberRange(min=10, max=200)])
     levelno = RadioField('Level', default=DEFAULT_LEVELNO, coerce=int,
-                         choices=[(k, v) for k, v in LEVELMAP.iteritems()])
+                         choices=[(k, v) for k, v in sorted(LEVELMAP.items())])
     created = IntegerField('Created', default=0,
                            validators=[validators.NumberRange(min=0)])
     span = IntegerField('Span', default=DEFAULT_SPAN,

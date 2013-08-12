@@ -30,16 +30,11 @@
     <div class="query">
       <form method="GET">
       <input type="text" size="3" maxlength="3" name="limit" value="{{ limit }}" /> entries per page
-      {%- set levelmap = [(10, "Debug"), (20, "Info"), (21, "Audit"), (30, "Warning"), (40, "Error"), (50, "Critical")] -%}
-      {%- for key, value in levelmap -%}
-      {%- if levelno == key %}
-      {%- set checked='checked="checked"' -%}
-      {%- else -%}
-      {%- set checked='' -%}
-      {%- endif %}
-      <span><input type="radio" name="levelno" value="{{key}}" id="r{{key}}" {{checked}}/>
-          <label for="r{{key}}">{{value}}</label></span>
+      {%- if forms -%}
+      {%- for form in forms.levelno -%}
+      <span>{{ form }}<label for="r{{key}}">{{form.label}}</label></span>
       {%- endfor -%}
+      {%- endif -%}
       {%- if created -%}
       <input type="hidden" name="created" value="{{created}}"/>
       <input type="text" size="3" maxlength="3" name="span" value="{{ span }}" /> seconds
