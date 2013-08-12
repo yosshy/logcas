@@ -114,7 +114,7 @@ http://docs.mongodb.org/manual/tutorial/install-mongodb-on-linux/ を参
 
 Fluentd の場合、ログ用コレクションの作成オプションに capped を選択出来
 ます。Capped コレクションとは一種のリングバッファで、コレクション（SQL
-DB におけるレコード）が指定されたサイズを超えると一番古いコレクションか
+DB におけるテーブル）が指定されたサイズを超えると一番古いコレクションか
 ら破棄します。これによりログのサイズ管理から開放されます。
 
 現時点では LogCabin に同様のオプションはないため、手作業で capped コレ
