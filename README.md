@@ -37,7 +37,7 @@ Each listing feature has capability below:
 See https://github.com/yosshy/logcas/tree/master/screenshots .
 
 
-## Basic structure
+## Basic Structure
 
 LogCAS does below:
 
@@ -167,7 +167,7 @@ logcas/tools/archiver/archiver.py like the web application and run it
 periodly with cron or a shell script.
 
 
-### OpenStack nodes
+### OpenStack Nodes
 
 Extract files as same as web application server and install files
 under logcas/logger into a suitable directory in Python path.
@@ -291,7 +291,7 @@ There are tabs under the title. See:
 
 Note: "(Archived)" tabs have no logs before the archiver runs.
 
-### Pagination, Log-level filter
+### Pagination, Log-level Filter
 
 There are forms for a number of entries per page and lowest log-level.
 Set them and push the submit button.
@@ -301,24 +301,24 @@ specify the page number. The pagination can have links for next and
 previous 1-9 pages, jumping to 10 page before and after of the current
 and the first and the last depending on the current page number.
 
-### List logs with same request ID
+### List Logs with Same Request ID
 
 Each request ID in a log list is a link and you will see log list with
 the request ID by time series if you click it.
 
-### Time filter
+### Time Filter
 
 Each time in the log list is a link and you will see logs before/after
 a period (10 seconds by default) if you click it. In this case, you
 will see a text form to specify the period by second.
 
 
-### Host filter
+### Host Filter
 
 Each hostname in the log list is a link and you will see logs from the
 host if you click it.
 
-### Theme selecter
+### Theme Selector
 
 There is a select form at the right-up corner. Select a theme and push
 the submit button, and colors will be changed.
