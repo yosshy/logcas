@@ -83,9 +83,9 @@ Flask-WTF, Flask-PyMongo パッケージをインストールします。ユニ�
 logcas/
     + app.py : プログラム本体
     + static/ : Web 静的コンテンツディレクトリ
-    |    + style.css : Web スタイルシート
+    |    \ *.css : Web スタイルシート群
     \ templates/ : Web テンプレートディレクトリ
-         + *.html : Web テンプレート群
+         \ *.html : Web テンプレート群
 ```
 
 app.py 中に MongoDB の設定を行う箇所がありますので、お使いの MongoDB に
