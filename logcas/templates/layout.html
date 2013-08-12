@@ -1,12 +1,23 @@
 <!doctype html>
 <html>
 <head>
-<title>LogCAS: Log Collecting and Analyzing System for OpenStack</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<title>Log Collecting and Analyzing System for OpenStack</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename=forms.style.data + '.css') }}">
 </head>
 <body>
 <div class=page>
-  <h1>LogCAS: Log Collecting and Analyzing System for OpenStack</h1>
+  <div align="right" class="style">
+    <form method="GET">
+      {%- for f in forms -%}
+      {%- if f.name != "style" %}
+      <input type="hidden" name="{{f.name}}" value="{{f.data}}"/>
+      {%- endif -%}
+      {%- endfor -%}
+      {{ forms.style }}
+      <input type="submit">
+    </form>
+  </div>
+  <h1>Log Collecting and Analyzing System for OpenStack</h1>
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
@@ -32,13 +43,14 @@
       <input type="text" size="3" maxlength="3" name="limit" value="{{ limit }}" /> entries per page
       {%- if forms -%}
       {%- for form in forms.levelno -%}
-      <span>{{ form }}<label for="r{{key}}">{{form.label}}</label></span>
+      <span>{{ form }}{{form.label}}</span>
       {%- endfor -%}
       {%- endif -%}
       {%- if created -%}
       <input type="hidden" name="created" value="{{created}}"/>
       <input type="text" size="3" maxlength="3" name="span" value="{{ span }}" /> seconds
-      {%- endif -%}
+      {%- endif %}
+      <input type="hidden" name="style" value="{{forms.style.data}}"/>
       <input type="submit"/>
       </form>
     </div>

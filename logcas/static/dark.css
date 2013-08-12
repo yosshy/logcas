@@ -1,64 +1,79 @@
 body {
-    #background-color: LightSlateGray;
+    background-color: black;
+    color: gray;
 }
 a:link {
-    color: black;
+    color: white;
 }
 a:visited {
-    color: #202020;
+    color: #E0E0E0;
 }
 form input {
     text-align: right;
 }
 table {
-    background-color: Purple;
+    background-color: gray;
     border-width: 2;
     width: 100%;
 }
 tr {
-    background-color: #CCCCCC;
+    color: #A0A0A0;
+    background-color: black;
     text-align: center;
 }
+tr a:link {
+    color: #A0A0A0;
+}
+tr a:visited {
+    color: #C0C0C0;
+}
 tr.DEBUG {
-    background-color: #808080;
+    background-color: #606060;
 }
 tr.INFO {
-    background-color: #00FFFF;
+    background-color: #505050;
 }
 tr.AUDIT {
-    background-color: #00FF00;
+    background-color: #404040;
 }
 tr.WARN {
-    background-color: yellow;
+    background-color: #303030;
 }
 tr.WARNING {
-    background-color: yellow;
+    color: #D0D0D0;
+    background-color: #303030;
 }
-tr.ERROR {
-    color: white;
-    background-color: red;
-}
-tr.ERROR a:link {
-    color: white;
-}
-tr.ERROR a:visited {
+tr.WARNING a:link {
     color: #D0D0D0;
 }
+tr.WARNING a:visited {
+    color: #A0A0A0;
+}
+tr.ERROR {
+    color: #D0D0D0;
+    background-color: #101010;
+}
+tr.ERROR a:link {
+    color: #D0D0D0;
+}
+tr.ERROR a:visited {
+    color: #A0A0A0;
+}
 tr.CRITICAL {
-    color: white;
+    color: #D0D0D0;
     background-color: black;
 }
 tr.CRITICAL a:link {
-    color: white;
+    color: #D0D0D0;
 }
 tr.CRITICAL a:visited {
-    color: #D0D0D0;
+    color: #A0A0A0;
 }
 td.message {
     text-align: left;
 }
 div.dump {
-    background-color: #D0D0D0;
+    background-color: black;
     border-width: 2;
     border-style: solid;
     border-color: black;
@@ -75,15 +90,15 @@ div.mode {
 div.mode a {
     padding: 10px;
     border-radius: 5px 5px 0 0;
-    background-color: DodgerBlue;
+    background-color: #303030;
 }
 div.mode a.selected {
     padding: 10px;
-    background-color: LightSteelBlue;
+    background-color: #505050;
 }
 div.body {
     padding: 5px;
-    background-color: LightSteelBlue;
+    background-color: #505050;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -93,7 +108,8 @@ div.query {
 }
 div.query span {
     padding: 5px;
-    background-color: #E0E0E0;
+    margin-left: 5px;
+    background-color: #303030;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -101,12 +117,15 @@ div.query span {
 div.pager {
     padding: 10px;
     /* word-spacing: 5px; */
-    background-color: LightSteelBlue;
+    background-color: #505050;
 }
 div.pager a,span {
-    background-color: #E0E0E0;
+    background-color: #303030;
     padding: 3px;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
+}
+div.style {
+    float: right;
 }

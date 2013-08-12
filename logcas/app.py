@@ -12,7 +12,7 @@ from flask import url_for
 from flask.ext import pymongo
 from flask.ext.wtf import Form
 from wtforms import validators
-from wtforms import IntegerField, RadioField
+from wtforms import IntegerField, RadioField, SelectField
 import yaml
 
 import pprint
@@ -62,9 +62,15 @@ LEVELMAP = {
     logging.CRITICAL: "CRITICAL",
 }
 
+STYLEMAP = [
+    ("default", "Default"),
+    ("dark", "Dark"),
+]
+
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
 DEFAULT_SPAN = 10
+DEFAULT_STYLE = "default"
 
 
 def columns_to_fields(columns=[]):
@@ -131,6 +137,8 @@ class BasicForm(Form):
                            validators=[validators.NumberRange(min=0)])
     span = IntegerField('Span', default=DEFAULT_SPAN,
                         validators=[validators.NumberRange(min=1, max=120)])
+    style = SelectField('Style', default=DEFAULT_STYLE,
+                        choices=STYLEMAP)
 
 
 # controllers
@@ -145,6 +153,7 @@ def _request_index():
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -162,6 +171,7 @@ def _request_show(request_id):
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -178,6 +188,7 @@ def _log_index():
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -196,6 +207,10 @@ def _log_index():
 
 @app.route('/logs/<ObjectId:log_id>')
 def _log_show(log_id):
+    forms = BasicForm(request.args)
+    if not forms.validate():
+        abort(400)
+    style = forms.style.data
     spec = {'_id': log_id}
     log = mongo.db.logs.find_one_or_404(spec)
     log.pop('_id')
@@ -208,6 +223,7 @@ def _archived_request_index():
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -225,6 +241,7 @@ def _archived_request_show(request_id):
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -241,6 +258,7 @@ def _archived_log_index():
     forms = BasicForm(request.args)
     if not forms.validate():
         abort(400)
+    style = forms.style.data
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
@@ -259,6 +277,10 @@ def _archived_log_index():
 
 @app.route('/archived/logs/<ObjectId:log_id>')
 def _archived_log_show(log_id):
+    forms = BasicForm(request.args)
+    if not forms.validate():
+        abort(400)
+    style = forms.style.data
     spec = {'_id': log_id}
     log = mongo.db.archived_logs.find_one_or_404(spec)
     log.pop('_id')

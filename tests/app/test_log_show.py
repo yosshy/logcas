@@ -51,17 +51,40 @@ class LogShowTestCase(testing.TestCase):
     def tearDownClass(cls):
         db.logs.drop()
 
-    def test_log_show_with_saved_entries(self):
+    def test_with_saved_entries(self):
         response = self.client.get(url_for('_log_show', log_id=DATA[0]))
         self.assert200(response)
         self.assertTemplateUsed('log_show.html')
 
     # no param
 
-    def test_log_show_without_params(self):
+    def test_without_params(self):
         response = self.client.get(url_for('_log_show', log_id=ObjectId()))
         self.assert404(response)
 
+    # style
+
+    def test_with_style_(self):
+        response = self.client.get(url_for('_log_show',
+                                           log_id=DATA[0], style=""))
+        self.assert400(response)
+
+    def test_with_style_abc(self):
+        response = self.client.get(url_for('_log_show',
+                                           log_id=DATA[0], style="abc"))
+        self.assert400(response)
+
+    def test_with_style_default(self):
+        response = self.client.get(url_for('_log_show',
+                                           log_id=DATA[0], style="default"))
+        self.assert200(response)
+        self.assertTemplateUsed('log_show.html')
+
+    def test_with_style_dark(self):
+        response = self.client.get(url_for('_log_show',
+                                           log_id=DATA[0], style="dark"))
+        self.assert200(response)
+        self.assertTemplateUsed('log_show.html')
 
 if __name__ == '__main__':
     unittest.main()
