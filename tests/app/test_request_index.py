@@ -180,5 +180,22 @@ class RequestIndexTestCase(testing.TestCase):
         self.assert200(response)
         self.assertTemplateUsed('request_index.html')
 
+    # host
+
+    def test_with_host_(self):
+        response = self.client.get(url_for('_request_index', host=""))
+        self.assert200(response)
+        self.assertTemplateUsed('request_index.html')
+
+    def test_with_host_20_characters(self):
+        response = self.client.get(url_for('_request_index', host="a" * 20))
+        self.assert200(response)
+        self.assertTemplateUsed('request_index.html')
+
+    def test_with_host_21_characters(self):
+        response = self.client.get(url_for('_request_index', host="a" * 21))
+        self.assert400(response)
+
+
 if __name__ == '__main__':
     unittest.main()

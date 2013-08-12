@@ -12,7 +12,7 @@ from flask import url_for
 from flask.ext import pymongo
 from flask.ext.wtf import Form
 from wtforms import validators
-from wtforms import IntegerField, RadioField, SelectField
+from wtforms import IntegerField, RadioField, SelectField, TextField
 import yaml
 
 import pprint
@@ -139,6 +139,8 @@ class BasicForm(Form):
                         validators=[validators.NumberRange(min=1, max=120)])
     style = SelectField('Style', default=DEFAULT_STYLE,
                         choices=STYLEMAP)
+    host = TextField('Host', default="",
+                     validators=[validators.length(min=0, max=20)])
 
 
 # controllers
@@ -175,8 +177,12 @@ def _request_show(request_id):
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
+    host = forms.host.data
+
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
+    if len(host):
+        spec.update({'hostname': host})
     counts, logs = get_logs(mongo.db.logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -194,11 +200,15 @@ def _log_index():
     levelno = forms.levelno.data
     created = forms.created.data
     span = forms.span.data
+    host = forms.host.data
+
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
             'created': {"$gte": created - span, "$lte": created + span},
         })
+    if len(host):
+        spec.update({'hostname': host})
     counts, logs = get_logs(mongo.db.logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -211,6 +221,7 @@ def _log_show(log_id):
     if not forms.validate():
         abort(400)
     style = forms.style.data
+
     spec = {'_id': log_id}
     log = mongo.db.logs.find_one_or_404(spec)
     log.pop('_id')
@@ -227,6 +238,7 @@ def _archived_request_index():
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
+
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -245,8 +257,12 @@ def _archived_request_show(request_id):
     page = forms.page.data
     limit = forms.limit.data
     levelno = forms.levelno.data
+    host = forms.host.data
+
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
+    if len(host):
+        spec.update({'hostname': host})
     counts, logs = get_logs(mongo.db.archived_logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -264,11 +280,15 @@ def _archived_log_index():
     levelno = forms.levelno.data
     created = forms.created.data
     span = forms.span.data
+    host = forms.host.data
+
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
             'created': {"$gte": created - span, "$lte": created + span},
         })
+    if len(host):
+        spec.update({'hostname': host})
     counts, logs = get_logs(mongo.db.archived_logs,
                             spec=spec, limit=limit, page=page)
     pages = counts / limit + 1
@@ -281,6 +301,7 @@ def _archived_log_show(log_id):
     if not forms.validate():
         abort(400)
     style = forms.style.data
+
     spec = {'_id': log_id}
     log = mongo.db.archived_logs.find_one_or_404(spec)
     log.pop('_id')

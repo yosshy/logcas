@@ -20,10 +20,11 @@
     {% for log in logs %}
     <tr class="{{ log.levelname }}">
         <td>{{ render_clockurl(log) }}</td>
-        <td>{{ log.hostname }}</td>
+        <td>{{ j.render_hosturl(log.hostname) }}</td>
         <td>{{ log.binary }}</td>
         <td>{{ log.levelname }}</td>
-        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
+        {%- set st = forms.style.data -%}
+        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id, style=st) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>

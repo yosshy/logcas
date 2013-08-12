@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 {% import "macro.html" as j with context %}
 
+{%- set st = forms.style.data -%}
+
 {% macro render_clockurl(log) -%}
 {%- set ln = request.args.get('levelno', 10) -%}
-<a href="{{url_for('_archived_log_index', created=log.created, levelno=ln)}}">{{log.time|localtime}}</a>
+<a href="{{url_for('_archived_log_index', created=log.created, levelno=ln, style=st)}}">{{log.time|localtime}}</a>
 {%- endmacro %}
 
 {% block body %}
@@ -23,7 +25,7 @@
     {% for log in logs %}
     <tr class="{{ log.levelname }}">
         <td>{{ render_clockurl(log) }}</td>
-        <td>{{ log.hostname }}</td>
+        <td>{{ j.render_hosturl(log.hostname) }}</td>
         <td>{{ log.binary }}</td>
         {%- if log.extra -%}
         <td>{{ log.extra.get('project_name','') }}</td>
@@ -32,13 +34,13 @@
         <td>{%- if log.extra.request_id -%}
         {%- set ln = request.args.get('levelno', 10) -%}
         {%- set rid = log.extra.get('request_id', '') -%}
-        <a href="{{url_for('_archived_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a>
+        <a href="{{url_for('_archived_request_show', request_id=rid, levelno=ln, style=st)}}">{{rid}}</a>
         {%- endif -%}</td>
         {%- else -%}
         <td/><td/><td/><td/>
         {%- endif -%}
         <td>{{ log.levelname }}</td>
-        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id) }}">{{ log.message }}</a></td>
+        <td class="message"><a href="{{ url_for('_archived_log_show', log_id=log._id, style=st) }}">{{ log.message }}</a></td>
     </tr>
     {% endfor %}
 </table>

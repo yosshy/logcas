@@ -88,5 +88,6 @@ class ArchivedLogShowTestCase(testing.TestCase):
         self.assert200(response)
         self.assertTemplateUsed('archived_log_show.html')
 
+
 if __name__ == '__main__':
     unittest.main()

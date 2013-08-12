@@ -1,12 +1,13 @@
-{% macro render_requesturl(id) -%}
-{%- set ln = request.args.get('levelno', 10) -%}
-<a href="{{url_for('_request_show', request_id=id, levelno=ln)}}">{{id}}</a>
+{% macro render_hosturl(host) -%}
+{%- set newargs = request.args.copy().to_dict() -%}
+{%- set _dummy = newargs.update({'host': host}) -%}
+{%- set _dummy = newargs.pop('page', None) -%}
+<a href="{{request.environ.PATH_INFO}}?{{newargs|urlencode}}">{{host}}</a>
 {%- endmacro %}
 
 {% macro render_current_pageurl(page, display) -%}
 {%- set newargs = request.args.copy().to_dict() -%}
 {%- set _dummy = newargs.update({'page': page}) -%}
-{%- set _dummy = newargs.pop('submit', None) -%}
 <a href="{{request.environ.PATH_INFO}}?{{newargs|urlencode}}">{{display}}</a>
 {%- endmacro %}
 

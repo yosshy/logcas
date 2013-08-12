@@ -86,5 +86,6 @@ class LogShowTestCase(testing.TestCase):
         self.assert200(response)
         self.assertTemplateUsed('log_show.html')
 
+
 if __name__ == '__main__':
     unittest.main()

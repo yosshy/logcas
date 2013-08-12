@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% import "macro.html" as j with context %}
 
+{%- set st = forms.style.data -%}
+
 {% block body %}
 {{ j.render_pagination(pages, page) }}
 <table>
@@ -27,7 +29,7 @@
         <td>{{ log.remote_address }}</td>
         {%- set ln = request.args.get('levelno', 10) -%}
         {%- set rid = log._id -%}
-        <td class="message"><a href="{{url_for('_request_show', request_id=rid, levelno=ln)}}">{{rid}}</a></td>
+        <td class="message"><a href="{{url_for('_request_show', request_id=rid, levelno=ln, style=st)}}">{{rid}}</a></td>
     </tr>
     {% endfor %}
 </table>
