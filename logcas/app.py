@@ -10,9 +10,12 @@ from flask import redirect
 from flask import request
 from flask import url_for
 from flask.ext import pymongo
+from flask.ext.wtf import Form
+from wtforms import validators
+from wtforms import IntegerField, RadioField
 import yaml
 
-import apiform
+import pprint
 
 TIMEZONE = tz.tzlocal()
 
@@ -26,6 +29,8 @@ MONGO_DBNAME = 'logcas'
 #MONGO_USERNAME = 'foo'
 #MONGO_PASSWORD = 'bar'
 
+SECRET_KEY = 'secrete'
+CSRF_ENABLED = False
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -58,6 +63,7 @@ LEVELMAP = {
 }
 
 ALLOWED_LEVELNO = [str(x) for x in LEVELMAP.keys()]
+#ALLOWED_LEVELNO = LEVELMAP.keys()
 
 DEFAULT_LEVELNO = logging.INFO
 DEFAULT_LIMIT = 100
@@ -115,15 +121,22 @@ def _localtime_filter(dtime):
 def _unixtime_filter(dtime):
     return int(time.mktime(dtime.timetuple()))
 
+# forms
 
-class Validator(apiform.Form):
-    page = apiform.IntField(min=1, default=1)
-    limit = apiform.IntField(min=10, max=200, default=DEFAULT_LIMIT)
-    levelno = apiform.IntField(allowed=ALLOWED_LEVELNO,
-                               default=DEFAULT_LEVELNO)
-    created = apiform.IntField(required=False, min=0, default=0)
-    span = apiform.IntField(min=1, max=120, default=DEFAULT_SPAN)
+class BasicForm(Form):
+    page = IntegerField('Page', default=1,
+                        validators=[validators.NumberRange(min=1)])
+    limit = IntegerField('Limit', default=DEFAULT_LIMIT,
+                         validators=[validators.NumberRange(min=10, max=200)])
+    levelno = RadioField('Level', default=DEFAULT_LEVELNO, coerce=int,
+                         choices=[(k, v) for k, v in LEVELMAP.iteritems()])
+    created = IntegerField('Created', default=0,
+                           validators=[validators.NumberRange(min=0)])
+    span = IntegerField('Span', default=DEFAULT_SPAN,
+                        validators=[validators.NumberRange(min=1, max=120)])
 
+
+# controllers
 
 @app.route('/')
 def _index():
@@ -132,12 +145,12 @@ def _index():
 
 @app.route('/requests')
 def _request_index():
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -149,12 +162,12 @@ def _request_index():
 
 @app.route('/requests/<request_id>')
 def _request_show(request_id):
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.logs,
@@ -165,14 +178,14 @@ def _request_show(request_id):
 
 @app.route('/logs')
 def _log_index():
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
-    created = form.get('created')
-    span = form.get('span')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
+    created = args.created.data
+    span = args.span.data
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
@@ -195,12 +208,12 @@ def _log_show(log_id):
 
 @app.route('/archived/requests')
 def _archived_request_index():
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
     spec = {"extra.request_id": {"$exists": 1},
             "extra.user_id": {"$ne": None},
             "levelno": {"$gte": levelno}}
@@ -212,12 +225,12 @@ def _archived_request_index():
 
 @app.route('/archived/requests/<request_id>')
 def _archived_request_show(request_id):
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
     spec = {'extra.request_id': request_id,
             'levelno': {'$gte': levelno}}
     counts, logs = get_logs(mongo.db.archived_logs,
@@ -228,14 +241,14 @@ def _archived_request_show(request_id):
 
 @app.route('/archived/logs')
 def _archived_log_index():
-    form = Validator(request)
-    if not form.validate():
+    args = BasicForm(request.args)
+    if not args.validate():
         abort(400)
-    page = form.get('page')
-    limit = form.get('limit')
-    levelno = form.get('levelno')
-    created = form.get('created')
-    span = form.get('span')
+    page = args.page.data
+    limit = args.limit.data
+    levelno = args.levelno.data
+    created = args.created.data
+    span = args.span.data
     spec = {'levelno': {'$gte': levelno}}
     if created:
         spec.update({
