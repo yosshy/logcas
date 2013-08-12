@@ -34,7 +34,7 @@
       {%- if request.path.startswith(url_for(method)) -%}
       {%- set selected = "selected" -%}
       {%- endif %}
-      <a class="{{selected}}" href="{{ url_for(method, limit=limit, levelno=levelno) }}">{{display}}</a>
+      <a class="{{selected}}" href="{{ url_for(method, limit=limit, levelno=levelno, style=forms.style.data) }}">{{display}}</a>
       {%- endfor -%}
   </div>
   <div class="body">
