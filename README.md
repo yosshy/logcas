@@ -51,16 +51,29 @@ Fluentd と LogCabin は併用可能ではありますが、通常はいずれ�
 * LogCabin: https://github.com/artirix/logcabin
 * Flask: http://flask.pocoo.org/
 * PyMongo：http://api.mongodb.org/python/current/
-* Flask-PyMongo: http://flask-pymongo.readthedocs.org/en/latest/
+* Flask-PyMongo: http://flask-pymongo.readthedocs.org/
+* Flask-WTF: http://pythonhosted.org/Flask-WTF/
+* Flask-Testing: http://pythonhosted.org/Flask-Testing/
 
 
 ## インストールと設定
 
 ### LogCAS WebAP サーバ
 
-現時点では特別なインストーラはありません。tar.gz ファイルの場合は tar
-で、ZIP ファイルの場合は unzip コマンド等でファイルを解凍し、適当なディ
-レクトリ下に移動させて下さい。
+LogCAS の WebAP は基本的に Flask アプリケーションですので、Flask と
+Flask-WTF, Flask-PyMongo パッケージをインストールします。ユニットテスト
+を実施する場合には Flask-Testing、blinker もインストールする必要があり
+ます。
+
+```
+# sudo pip install Flask
+# sudo pip install Flask-PyMongo
+# sudo pip install Flask-WTF
+```
+
+現時点では LogCAS 自身に特別なインストーラはありません。tar.gz ファイル
+の場合は tarで、ZIP ファイルの場合は unzip コマンド等でファイルを解凍し、
+適当なディレクトリ下に移動させて下さい。
 
 ディレクトリ構成
 
@@ -293,5 +306,3 @@ Web ブラウザで http://WebAPサーバ:5000/ にアクセスしてみます�
 ## ライセンス
 
 Apache License ver.2.0
-
-logcas/apiform.py は Flask-APIform の派生物のため BSD ライセンスです。
