@@ -81,7 +81,6 @@ class FluentHandler(logging.Handler):
         self.sender = sender.FluentSender(tag,
                                           host=host, port=port,
                                           timeout=timeout, verbose=verbose)
-        #self.fmt = FluentRecordFormatter()
         self.fmt = FluentFormatter()
         logging.Handler.__init__(self)
 
