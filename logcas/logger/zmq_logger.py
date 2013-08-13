@@ -29,10 +29,10 @@ class JsonFormatter(object):
         return lines
 
     def format(self, record):
-        message = {'hostname' : self.hostname,
-                   #'name' : record.name,
-                   #'module' : record.module,
-                   'binary' : self.binaryname,
+        message = {'hostname': self.hostname,
+                   #'name': record.name,
+                   #'module': record.module,
+                   'binary': self.binaryname,
                    'message': record.getMessage(),
                    #'msg': record.msg,
                    'levelname': record.levelname,
@@ -79,7 +79,7 @@ class ZmqHandler(logging.Handler):
         logging.Handler.__init__(self)
         self.ctx = zmq.Context()
         self.sock = self.ctx.socket(getattr(zmq, socket))
-	self.fmt = JsonFormatter()
+        self.fmt = JsonFormatter()
         self.address = address
         if mode == 'connect':
             self.sock.connect(self.address)
@@ -87,8 +87,7 @@ class ZmqHandler(logging.Handler):
             self.sock.bind(self.address)
 
     def emit(self, record):
-	data = self.fmt.format(record)
-        #data = self.format(record)
+        data = self.fmt.format(record)
         self.sock.send(data)
 
     def _close(self):

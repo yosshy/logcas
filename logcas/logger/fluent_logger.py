@@ -17,6 +17,7 @@ try:
 except ImportError:
     import simplejson as json
 
+
 class FluentFormatter(object):
     def __init__(self):
         # NOTE(jkoelker) we ignore the fmt argument, but its still there
@@ -35,10 +36,10 @@ class FluentFormatter(object):
         return lines
 
     def format(self, record):
-        message = {'hostname' : self.hostname,
-                   #'name' : record.name,
-                   #'module' : record.module,
-                   'binary' : self.binaryname,
+        message = {'hostname': self.hostname,
+                   #'name': record.name,
+                   #'module': record.module,
+                   'binary': self.binaryname,
                    'message': record.getMessage(),
                    #'msg': record.msg,
                    'levelname': record.levelname,
@@ -68,16 +69,13 @@ class FluentFormatter(object):
 
         return message
 
+
 class FluentHandler(logging.Handler):
     '''
     Logging Handler for fluent.
     '''
-    def __init__(self,
-           tag,
-           host='localhost',
-           port=24224,
-           timeout=3.0,
-           verbose=False):
+    def __init__(self, tag, host='localhost', port=24224, timeout=3.0,
+                 verbose=False):
 
         self.tag = tag
         self.sender = sender.FluentSender(tag,
@@ -88,7 +86,8 @@ class FluentHandler(logging.Handler):
         logging.Handler.__init__(self)
 
     def emit(self, record):
-        if record.levelno < self.level: return
+        if record.levelno < self.level:
+            return
         data = self.fmt.format(record)
         self.sender.emit(None, data)
 

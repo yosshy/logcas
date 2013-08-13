@@ -12,8 +12,8 @@ from logcas.bootstrap import *
 # forms
 
 class LogShowForm(Form):
-    style = SelectField('Style', default=DEFAULT_STYLE,
-                                    choices=STYLEMAP)
+    style = SelectField('Style', default=DEFAULT_STYLE, choices=STYLEMAP)
+
 
 # controllers
 

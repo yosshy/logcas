@@ -10,6 +10,7 @@ import yaml
 
 from logcas.bootstrap import *
 
+
 # forms
 
 class RequestIndexForm(Form):
@@ -24,7 +25,6 @@ class RequestIndexForm(Form):
 
 
 # controllers
-
 
 @app.route('/')
 def _index():

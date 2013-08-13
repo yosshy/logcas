@@ -19,6 +19,7 @@ logging.basicConfig(stream=sys.stderr)
 LOG = logging.getLogger()
 LOG.setLevel(SCRIPT_LOG_LEVEL)
 
+
 def main():
     # Prepare MongoDB client instance.
     client = MongoClient(MONGO_HOST, MONGO_PORT)
