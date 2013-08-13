@@ -16,6 +16,10 @@ DATA = []
 
 class LogShowTestCase(testing.TestCase):
 
+    col = db.logs
+    controller = '_log_show'
+    template = 'log_show.html'
+
     def create_app(self):
         app = db.app
         app.config['TESTING'] = True
@@ -30,7 +34,7 @@ class LogShowTestCase(testing.TestCase):
         onesecond = timedelta(0, 1)
         for i in range(0, 20):
             for level in logcas.bootstrap.LEVELMAP.keys():
-                data = db.logs.save({
+                data = cls.col.save({
                     "time": now,
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
@@ -51,43 +55,51 @@ class LogShowTestCase(testing.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
-        db.logs.drop()
+        global DATA
+        DATA = []
+        cls.col.drop()
 
     def test_with_saved_entries(self):
-        response = self.client.get(url_for('_log_show', log_id=DATA[0]))
+        response = self.client.get(url_for(self.controller, log_id=DATA[0]))
         self.assert200(response)
-        self.assertTemplateUsed('log_show.html')
+        self.assertTemplateUsed(self.template)
 
     # no param
 
     def test_without_params(self):
-        response = self.client.get(url_for('_log_show', log_id=ObjectId()))
+        response = self.client.get(url_for(self.controller, log_id=ObjectId()))
         self.assert404(response)
 
     # style
 
     def test_with_style_(self):
-        response = self.client.get(url_for('_log_show',
+        response = self.client.get(url_for(self.controller,
                                            log_id=DATA[0], style=""))
         self.assert400(response)
 
     def test_with_style_abc(self):
-        response = self.client.get(url_for('_log_show',
+        response = self.client.get(url_for(self.controller,
                                            log_id=DATA[0], style="abc"))
         self.assert400(response)
 
     def test_with_style_default(self):
-        response = self.client.get(url_for('_log_show',
+        response = self.client.get(url_for(self.controller,
                                            log_id=DATA[0], style="default"))
         self.assert200(response)
-        self.assertTemplateUsed('log_show.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_style_dark(self):
-        response = self.client.get(url_for('_log_show',
+        response = self.client.get(url_for(self.controller,
                                            log_id=DATA[0], style="dark"))
         self.assert200(response)
-        self.assertTemplateUsed('log_show.html')
+        self.assertTemplateUsed(self.template)
+
+
+class ArchivedLogShowTestCase(LogShowTestCase):
+
+    col = db.archived_logs
+    controller = '_archived_log_show'
+    template = 'archived_log_show.html'
 
 
 if __name__ == '__main__':

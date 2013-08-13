@@ -12,7 +12,24 @@ import logcas.bootstrap
 import db
 
 
+class IndexTestCase(testing.TestCase):
+
+    def create_app(self):
+        app = logcas.bootstrap.app
+        app.config['TESTING'] = True
+        app.config['CSRF_ENABLED'] = False
+        return app
+
+    def test_index(self):
+        response = self.client.get('/')
+        self.assertRedirects(response, url_for('_request_index'))
+
+
 class RequestIndexTestCase(testing.TestCase):
+
+    col = db.logs
+    controller = '_request_index'
+    template = 'request_index.html'
 
     def create_app(self):
         app = logcas.bootstrap.app
@@ -27,7 +44,7 @@ class RequestIndexTestCase(testing.TestCase):
         onesecond = timedelta(0, 1)
         for i in range(0, 20):
             for level in logcas.bootstrap.LEVELMAP.keys():
-                db.logs.save({
+                cls.col.save({
                     "time": now,
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
@@ -47,140 +64,141 @@ class RequestIndexTestCase(testing.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        db.logs.drop()
-
-    # redirect
-
-    def test_index(self):
-        response = self.client.get('/')
-        self.assertRedirects(response, url_for('_request_index'))
+        cls.col.drop()
 
     # no param
 
     def test_without_params(self):
-        response = self.client.get(url_for('_request_index'))
+        response = self.client.get(url_for(self.controller))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     # page
 
     def test_with_page_(self):
-        response = self.client.get(url_for('_request_index', page=""))
+        response = self.client.get(url_for(self.controller, page=""))
         self.assert400(response)
 
     def test_with_page_abc(self):
-        response = self.client.get(url_for('_request_index', page="abc"))
+        response = self.client.get(url_for(self.controller, page="abc"))
         self.assert400(response)
 
     def test_with_page_0(self):
-        response = self.client.get(url_for('_request_index', page="0"))
+        response = self.client.get(url_for(self.controller, page="0"))
         self.assert400(response)
 
     def test_with_page_1(self):
-        response = self.client.get(url_for('_request_index', page="1"))
+        response = self.client.get(url_for(self.controller, page="1"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_page_100(self):
-        response = self.client.get(url_for('_request_index', page="100"))
+        response = self.client.get(url_for(self.controller, page="100"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     # limit
 
     def test_with_limit_(self):
-        response = self.client.get(url_for('_request_index', limit=""))
+        response = self.client.get(url_for(self.controller, limit=""))
         self.assert400(response)
 
     def test_with_limit_abc(self):
-        response = self.client.get(url_for('_request_index', limit="abc"))
+        response = self.client.get(url_for(self.controller, limit="abc"))
         self.assert400(response)
 
     def test_with_limit_9(self):
-        response = self.client.get(url_for('_request_index', limit="9"))
+        response = self.client.get(url_for(self.controller, limit="9"))
         self.assert400(response)
 
     def test_with_limit_10(self):
-        response = self.client.get(url_for('_request_index', limit="10"))
+        response = self.client.get(url_for(self.controller, limit="10"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_limit_200(self):
-        response = self.client.get(url_for('_request_index', limit="200"))
+        response = self.client.get(url_for(self.controller, limit="200"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_limit_201(self):
-        response = self.client.get(url_for('_request_index', limit="201"))
+        response = self.client.get(url_for(self.controller, limit="201"))
         self.assert400(response)
 
     # levelno
 
     def test_with_levelno_(self):
-        response = self.client.get(url_for('_request_index', levelno=""))
+        response = self.client.get(url_for(self.controller, levelno=""))
         self.assert400(response)
 
     def test_with_levelno_abc(self):
-        response = self.client.get(url_for('_request_index', levelno="abc"))
+        response = self.client.get(url_for(self.controller, levelno="abc"))
         self.assert400(response)
 
     def test_with_levelno_0(self):
-        response = self.client.get(url_for('_request_index', levelno="0"))
+        response = self.client.get(url_for(self.controller, levelno="0"))
         self.assert400(response)
 
     def test_with_levelno_10(self):
-        response = self.client.get(url_for('_request_index', levelno="10"))
+        response = self.client.get(url_for(self.controller, levelno="10"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_20(self):
-        response = self.client.get(url_for('_request_index', levelno="20"))
+        response = self.client.get(url_for(self.controller, levelno="20"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_21(self):
-        response = self.client.get(url_for('_request_index', levelno="21"))
+        response = self.client.get(url_for(self.controller, levelno="21"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_30(self):
-        response = self.client.get(url_for('_request_index', levelno="30"))
+        response = self.client.get(url_for(self.controller, levelno="30"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_40(self):
-        response = self.client.get(url_for('_request_index', levelno="40"))
+        response = self.client.get(url_for(self.controller, levelno="40"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_50(self):
-        response = self.client.get(url_for('_request_index', levelno="50"))
+        response = self.client.get(url_for(self.controller, levelno="50"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_levelno_60(self):
-        response = self.client.get(url_for('_request_index', levelno="60"))
+        response = self.client.get(url_for(self.controller, levelno="60"))
         self.assert400(response)
 
     # style
 
     def test_with_style_(self):
-        response = self.client.get(url_for('_request_index', style=""))
+        response = self.client.get(url_for(self.controller, style=""))
         self.assert400(response)
 
     def test_with_style_abc(self):
-        response = self.client.get(url_for('_request_index', style="abc"))
+        response = self.client.get(url_for(self.controller, style="abc"))
         self.assert400(response)
 
     def test_with_style_default(self):
-        response = self.client.get(url_for('_request_index', style="default"))
+        response = self.client.get(url_for(self.controller, style="default"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
 
     def test_with_style_dark(self):
-        response = self.client.get(url_for('_request_index', style="dark"))
+        response = self.client.get(url_for(self.controller, style="dark"))
         self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
+        self.assertTemplateUsed(self.template)
+
+
+class ArchivedRequestIndexTestCase(RequestIndexTestCase):
+
+    col = db.archived_logs
+    controller = '_archived_request_index'
+    template = 'archived_request_index.html'
 
 
 if __name__ == '__main__':
