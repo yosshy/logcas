@@ -32,6 +32,7 @@ class RequestShowTestCase(testing.TestCase):
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
                     "hostname": "localhost",
+                    "levelno": level,
                     "levelname": logcas.bootstrap.LEVELMAP[level],
                     "binary": "nova-compute",
                     "extra": {
@@ -39,6 +40,7 @@ class RequestShowTestCase(testing.TestCase):
                         "remote_address": "127.0.0.1",
                         "project_name": "testproject",
                         "user_name": "testuser",
+                        "user_id": "xxxxxxxx",
                     }
                 })
                 now = now + onesecond
@@ -50,7 +52,7 @@ class RequestShowTestCase(testing.TestCase):
     # no param
 
     def test_without_params(self):
-        response = self.client.get(url_for('_request_show', request_id="0"))
+        response = self.client.get(url_for('_request_show', request_id="10"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
@@ -58,28 +60,28 @@ class RequestShowTestCase(testing.TestCase):
 
     def test_with_page_(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", page=""))
+                                           request_id="10", page=""))
         self.assert400(response)
 
     def test_with_page_abc(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", page="abc"))
+                                           request_id="10", page="abc"))
         self.assert400(response)
 
     def test_with_page_0(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", page="0"))
+                                           request_id="10", page="0"))
         self.assert400(response)
 
     def test_with_page_1(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", page="1"))
+                                           request_id="10", page="1"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_page_100(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", page="100"))
+                                           request_id="10", page="100"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
@@ -87,117 +89,137 @@ class RequestShowTestCase(testing.TestCase):
 
     def test_with_limit_(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit=""))
+                                           request_id="10", limit=""))
         self.assert400(response)
 
     def test_with_limit_abc(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit="abc"))
+                                           request_id="10", limit="abc"))
         self.assert400(response)
 
     def test_with_limit_9(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit="9"))
+                                           request_id="10", limit="9"))
         self.assert400(response)
 
     def test_with_limit_10(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit="10"))
+                                           request_id="10", limit="10"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_limit_200(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit="200"))
+                                           request_id="10", limit="200"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_limit_201(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", limit="201"))
+                                           request_id="10", limit="201"))
         self.assert400(response)
 
     # levelno
 
     def test_with_levelno_(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno=""))
+                                           request_id="10", levelno=""))
         self.assert400(response)
 
     def test_with_levelno_abc(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="abc"))
+                                           request_id="10", levelno="abc"))
         self.assert400(response)
 
     def test_with_levelno_0(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="0"))
+                                           request_id="10", levelno="0"))
         self.assert400(response)
 
     def test_with_levelno_10(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="10"))
+                                           request_id="10", levelno="10"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_20(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="20"))
+                                           request_id="10", levelno="20"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_21(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="21"))
+                                           request_id="10", levelno="21"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_30(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="30"))
+                                           request_id="10", levelno="30"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_40(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="40"))
+                                           request_id="10", levelno="40"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_50(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="50"))
+                                           request_id="10", levelno="50"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_levelno_60(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", levelno="60"))
+                                           request_id="10", levelno="60"))
         self.assert400(response)
 
     # style
 
     def test_with_style_(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", style=""))
+                                           request_id="10", style=""))
         self.assert400(response)
 
     def test_with_style_abc(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", style="abc"))
+                                           request_id="10", style="abc"))
         self.assert400(response)
 
     def test_with_style_default(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", style="default"))
+                                           request_id="10", style="default"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
 
     def test_with_style_dark(self):
         response = self.client.get(url_for('_request_show',
-                                           request_id="0", style="dark"))
+                                           request_id="10", style="dark"))
         self.assert200(response)
         self.assertTemplateUsed('request_show.html')
+
+    # host
+
+    def test_with_host_(self):
+        response = self.client.get(url_for('_request_show',
+                                           request_id="10", host=""))
+        self.assert200(response)
+        self.assertTemplateUsed('request_show.html')
+
+    def test_with_host_20_characters(self):
+        response = self.client.get(url_for('_request_show',
+                                           request_id="10", host="a" * 20))
+        self.assert200(response)
+        self.assertTemplateUsed('request_show.html')
+
+    def test_with_host_21_characters(self):
+        response = self.client.get(url_for('_request_show',
+                                           request_id="10", host="a" * 21))
+        self.assert400(response)
+
 
 if __name__ == '__main__':
     unittest.main()

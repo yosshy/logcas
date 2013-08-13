@@ -32,6 +32,7 @@ class ArchivedRequestIndexTestCase(testing.TestCase):
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
                     "hostname": "localhost",
+                    "levelno": level,
                     "levelname": logcas.bootstrap.LEVELMAP[level],
                     "binary": "nova-compute",
                     "extra": {
@@ -39,6 +40,7 @@ class ArchivedRequestIndexTestCase(testing.TestCase):
                         "remote_address": "127.0.0.1",
                         "project_name": "testproject",
                         "user_name": "testuser",
+                        "user_id": "xxxxxxxx",
                     }
                 })
                 now = now + onesecond
