@@ -6,7 +6,7 @@ import unittest
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
-import logcas.app
+import logcas.bootstrap
 from tools.archiver import reset_archived_flag
 
 AUDIT = INFO + 1
@@ -37,7 +37,7 @@ class ResetArchivedFlasTestCase(unittest.TestCase):
             "message": "This is a message",
             "hostname": "localhost",
             "levelno": level,
-            "levelname": logcas.app.LEVELMAP[level],
+            "levelname": logcas.bootstrap.LEVELMAP[level],
             "binary": "nova-compute",
             "extra": {
                 "request_id": request_id,

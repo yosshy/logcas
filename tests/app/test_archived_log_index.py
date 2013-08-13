@@ -8,14 +8,14 @@ from flask import url_for
 from flask.ext import testing
 from flask.ext import pymongo
 
-import logcas.app
+import logcas.bootstrap
 import db
 
 
 class ArchivedLogIndexTestCase(testing.TestCase):
 
     def create_app(self):
-        app = logcas.app.app
+        app = logcas.bootstrap.app
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
         return app
@@ -26,13 +26,13 @@ class ArchivedLogIndexTestCase(testing.TestCase):
         cls.now = now
         onesecond = timedelta(0, 1)
         for i in range(0, 20):
-            for level in logcas.app.LEVELMAP.keys():
+            for level in logcas.bootstrap.LEVELMAP.keys():
                 db.archived_logs.save({
                     "time": now,
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
                     "hostname": "localhost",
-                    "levelname": logcas.app.LEVELMAP[level],
+                    "levelname": logcas.bootstrap.LEVELMAP[level],
                     "binary": "nova-compute",
                     "extra": {
                         "request_id": str(i),

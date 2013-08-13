@@ -8,14 +8,14 @@ from flask import url_for
 from flask.ext import testing
 from flask.ext import pymongo
 
-import logcas.app
+import logcas.bootstrap
 import db
 
 
 class RequestIndexTestCase(testing.TestCase):
 
     def create_app(self):
-        app = logcas.app.app
+        app = logcas.bootstrap.app
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
         return app
@@ -26,13 +26,13 @@ class RequestIndexTestCase(testing.TestCase):
         cls.now = now
         onesecond = timedelta(0, 1)
         for i in range(0, 20):
-            for level in logcas.app.LEVELMAP.keys():
+            for level in logcas.bootstrap.LEVELMAP.keys():
                 db.logs.save({
                     "time": now,
                     "created": int(now.strftime("%s")),
                     "message": "This is a message",
                     "hostname": "localhost",
-                    "levelname": logcas.app.LEVELMAP[level],
+                    "levelname": logcas.bootstrap.LEVELMAP[level],
                     "binary": "nova-compute",
                     "extra": {
                         "request_id": str(i),
@@ -179,22 +179,6 @@ class RequestIndexTestCase(testing.TestCase):
         response = self.client.get(url_for('_request_index', style="dark"))
         self.assert200(response)
         self.assertTemplateUsed('request_index.html')
-
-    # host
-
-    def test_with_host_(self):
-        response = self.client.get(url_for('_request_index', host=""))
-        self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
-
-    def test_with_host_20_characters(self):
-        response = self.client.get(url_for('_request_index', host="a" * 20))
-        self.assert200(response)
-        self.assertTemplateUsed('request_index.html')
-
-    def test_with_host_21_characters(self):
-        response = self.client.get(url_for('_request_index', host="a" * 21))
-        self.assert400(response)
 
 
 if __name__ == '__main__':

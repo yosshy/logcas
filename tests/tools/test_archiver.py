@@ -9,7 +9,7 @@ from pymongo.collection import Collection
 import mox
 
 from tools.archiver import archiver
-import logcas.app
+import logcas.bootstrap
 
 AUDIT = INFO + 1
 
@@ -42,7 +42,7 @@ class ArchiverTestCase(unittest.TestCase):
             "message": "This is a message",
             "hostname": "localhost",
             "levelno": level,
-            "levelname": logcas.app.LEVELMAP[level],
+            "levelname": logcas.bootstrap.LEVELMAP[level],
             "binary": "nova-compute",
             "extra": {
                 "request_id": request_id,
