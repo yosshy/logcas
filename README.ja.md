@@ -81,15 +81,33 @@ Flask-WTF, Flask-PyMongo パッケージをインストールします。ユニ�
 
 ```
 logcas/
-    + app.py : プログラム本体
-    + static/ : Web 静的コンテンツディレクトリ
-    |    \ *.css : Web スタイルシート群
-    \ templates/ : Web テンプレートディレクトリ
-         \ *.html : Web テンプレート群
+├── logcas/
+│   ├── static/.. Web静的コンテンツ群
+│   │   ├── dark.css
+│   │   └── default.css
+│   ├── templates/.. Webテンプレート群
+│   │   ├── archived_log_index.html
+│   │   ├── archived_log_show.html
+│   │   ├── archived_request_index.html
+│   │   ├── archived_request_show.html
+│   │   ├── layout.html
+│   │   ├── log_index.html
+│   │   ├── log_show.html
+│   │   ├── macro.html
+│   │   ├── request_index.html
+│   │   └── request_show.html
+│   ├── __init__.py  .. 以下Webアプリケーション本体
+│   ├── bootstrap.py
+│   ├── log_index.py
+│   ├── log_show.py
+│   ├── request_index.py
+│   ├── request_show.py
+│   └── template_filters.py
+└── runserver.py  .. プログラム実行ファイル
 ```
 
-app.py 中に MongoDB の設定を行う箇所がありますので、お使いの MongoDB に
-合わせて設定を行なって下さい。
+bootstrap.py 中に MongoDB の設定を行う箇所がありますので、お使いの
+MongoDB に合わせて設定を行なって下さい。
 
 ```
 MONGO_DBNAME = 'logcas'
@@ -99,10 +117,10 @@ MONGO_USERNAME = 'foo'
 MONGO_PASSWORD = 'bar'
 ```
 
-設定が終わったら、app.py を実行して下さい。
+設定が終わったら、runserver.py を実行して下さい。
 
 ```
-# python logcas/app.py
+# python runserver.py
 ```
 
 ### ログサーバ
@@ -180,11 +198,11 @@ Python のパスが通っている場所に配置して下さい。
 ディレクトリ構成例
 ```
 /usr/local/lib/python2.7/dist-packages/logcas/
-    + __init__.py … 空ファイル
-    \logger/
-        + __init__.py … 空ファイル
-        + fluent_logger.py …Fluentd 用 Python ロギングハンドラ
-        \ zmq_logger.py …LogCabin 用 Python ロギングハンドラ
+├── __init__.py  .. 空ファイル
+└── logger/
+    ├── __init__.py  .. 空ファイル
+    ├── fluent_logger.py  .. Fluentd 用 Python ロギングハンドラ
+    └── zmq_logger.py  .. LogCabin 用 Python ロギングハンドラ
 ```
 
 次に、logcas/logger/etc_nova_logging.conf を /etc/nova/logging.conf に

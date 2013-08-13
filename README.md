@@ -81,14 +81,32 @@ Directory structure:
 
 ```
 logcas/
-    + app.py : the web application
-    + static/ : a directory for static contents for web
-    |    \ *.css : web style sheets
-    \ templates/ : a directory for web templates
-         \ *.html : web templates
+├── logcas/
+│   ├── static/  .. Web static contents (CSS)
+│   │   ├── dark.css
+│   │   └── default.css
+│   ├── templates/  .. Web templates
+│   │   ├── archived_log_index.html
+│   │   ├── archived_log_show.html
+│   │   ├── archived_request_index.html
+│   │   ├── archived_request_show.html
+│   │   ├── layout.html
+│   │   ├── log_index.html
+│   │   ├── log_show.html
+│   │   ├── macro.html
+│   │   ├── request_index.html
+│   │   └── request_show.html
+│   ├── __init__.py  .. Web application source
+│   ├── bootstrap.py
+│   ├── log_index.py
+│   ├── log_show.py
+│   ├── request_index.py
+│   ├── request_show.py
+│   └── template_filters.py
+└── runserver.py  .. Web application startup script
 ```
 
-There are some parameters in app.py, so set them for your MongoDB.
+There are some parameters in bootstrap.py, so set them for your MongoDB.
 
 ```
 MONGO_DBNAME = 'logcas'
@@ -98,11 +116,11 @@ MONGO_USERNAME = 'foo'
 MONGO_PASSWORD = 'bar'
 ```
 
-Run app.py after setting them.
+Run runserver.py after setting them.
 
 
 ```
-# python logcas/app.py
+# python runserver.py
 ```
 
 ### Log Server
@@ -178,11 +196,11 @@ it. Make sure that __init__.py file is in it.
 A directory structure example:
 ```
 /usr/local/lib/python2.7/dist-packages/logcas/
-    + __init__.py ... an empty file
-    \logger/
-        + __init__.py ... an empty file
-        + fluent_logger.py ... Python logging handler for Fluentd
-        \ zmq_logger.py ... Python logging handler for…LogCabi
+├── __init__.py  .. an empty file
+└── logger/
+    ├── __init__.py  .. an empty file
+    ├── fluent_logger.py  .. Python logging handler for Fluentd
+    └── zmq_logger.py  .. Python logging handler for LogCabin
 ```
 
 Then, copy logcas/logger/etc_nova_logging.conf to
